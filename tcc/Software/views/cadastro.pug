@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .login-wrapper
+    .login-box
+      h1 Cadastro
+      if message
+        p.error= message
+      form.login-form(action='/cadastro' method='post')
+        label(for='nome') Nome
+        input#nome(type='text' name='nome' placeholder='Seu nome completo' required)
+
+        label(for='senha') Senha
+        input#senha(type='password' name='senha' placeholder='Crie uma senha' required)
+
+        label(for='dataNascimento') Data de Nascimento
+        input#dataNascimento(type='date' name='dataNascimento' required)
+
+        .form-actions
+          button.btn(type='submit') Cadastrar
+          a.cancel(href='/login') Voltar para login

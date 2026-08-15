@@ -1,0 +1,26 @@
+extends layout
+
+block content
+	.login-wrapper
+		.login-box
+			h1 Login
+			if message
+				p.error= message
+			form.login-form(action='/login' method='post')
+				label(for='email') E-mail
+				input#email(type='email' name='email' placeholder='exemlpo@exemplo.com' required)
+
+				label(for='password') Senha
+				input#password(type='password' name='password' placeholder='123456' required)
+
+				.form-row
+					label.remember
+						input(type='checkbox' name='remember')
+						| Lembrar de mim
+
+				.form-actions
+					button.btn#submit(type='submit') Entrar
+
+				.form-actions
+					a.cancel(href='/cadastro') Cadastrar Novo Usuário
+
