@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  .container
+    header.header
+      h1 Adicionar objeto
+      a.btn-back(href="/inicio") Voltar para tela inicial
+
+    main.form-container
+      form.object-form(action='/adicionar' method='post')
+        label(for='tipo') Tipo de objeto
+        select#tipo(name='tipo' required)
+          each tipo in tipos
+            option(value=tipo selected=tipo === tipoSelecionado)= tipo
+
+        label(for='nome') Nome/Modelo
+        input#nome(type='text' name='nome' placeholder='Digite o nome ou modelo' required)
+
+        label(for='numeroSerie') Número de Série
+        input#numeroSerie(type='text' name='numeroSerie' placeholder='Digite o número de série' required)
+
+        label.checkbox-label(for='ativo')
+          input#ativo(type='checkbox' name='ativo' checked)
+          | Objeto ativo
+
+        .form-actions
+          button.btn(type='submit') Adicionar objeto
+          a.cancel(href="/inicio") Cancelar

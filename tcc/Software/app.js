@@ -11,6 +11,7 @@ var veiculosRouter = require('./routes/veiculos');
 var acessoriosRouter = require('./routes/acessorios');
 var loginRouter = require('./routes/login');
 var cadastroRouter = require('./routes/cadastro');
+var adicionarRouter = require('./routes/adicionar');
 
 var app = express();
 
@@ -31,6 +32,7 @@ app.use('/veiculos', require('./routes/veiculos'));
 app.use('/acessorios', require('./routes/acessorios'));
 app.use('/login', require('./routes/login'));
 app.use('/cadastro', cadastroRouter);
+app.use('/adicionar', adicionarRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

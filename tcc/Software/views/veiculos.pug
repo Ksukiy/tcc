@@ -10,21 +10,28 @@ html(lang="pt-BR")
     .container
       header.header
         h1 Lista de Veículos
-        a.btn-back(href="/") Voltar para Home
+        .header-actions
+          a.btn-add(href="/adicionar?tipo=Veículo") Adicionar veículo
+          a.btn-back(href="/inicio") Voltar para tela inicial
 
       main.table-container
         table
           thead
             tr
-              th Nome/Modelo
-              th Número de Série
-              th Ativo
+              th Marca
+              th Modelo
+              th Ano
+              th Placa
+              th ID
           tbody
             if veiculos && veiculos.length > 0
               each item in veiculos
                 tr
-                  td= item.nome || "Não informado"
-                  td= item.numeroSerie
+                  td= item.marca || "Não informado"
+                  td= item.modelo || "Não informado"
+                  td= item.ano || "Não informado"
+                  td= item.placa || "Não informado"
+                  td= item.id || "Não informado"
                   td
                     if item.ativo
                       span.badge.badge-active Sim
@@ -32,4 +39,4 @@ html(lang="pt-BR")
                       span.badge.badge-inactive Não
             else
               tr
-                td.empty-state(colspan="3") Nenhum veículo encontrado no estoque.
+                td.empty-state(colspan="5") Nenhum veículo encontrado no estoque.
