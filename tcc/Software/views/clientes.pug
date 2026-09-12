@@ -23,6 +23,7 @@ html(lang="pt-BR")
               th Tipo de Cliente
               th Cpf/Cnpj
               th ID
+              th Status
           tbody
             if clientes && clientes.length > 0
               each item in clientes
@@ -32,10 +33,11 @@ html(lang="pt-BR")
                   td= item.tipoCliente || "Não informado"
                   td= item.cpfCnpj || "Não informado"
                   td= item.id || "Não informado"
-                  if item.ativo
+                  td
+                    if item.ativo
                       span.badge.badge-active Sim
                     else
                       span.badge.badge-inactive Não
             else
               tr
-                td.empty-state(colspan="5") Nenhum cliente encontrado.
+                td.empty-state(colspan="6") Nenhum cliente encontrado.
