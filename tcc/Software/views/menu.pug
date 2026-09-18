@@ -1,0 +1,34 @@
+input#menu-toggle.menu-toggle(type="checkbox" aria-label="Abrir menu")
+label#menu-trigger.menu-trigger(for="menu-toggle" aria-label="Abrir menu")
+  span
+  span
+  span
+
+aside.side-menu
+  .side-menu__top
+    p.side-menu__eyebrow PAINEL
+  .user-card
+    .user-avatar= (usuario || 'U').charAt(0).toUpperCase()
+    .user-card__copy
+      span Usuário conectado
+      strong= usuario || 'Visitante'
+  nav.side-nav(aria-label="Menu do usuário")
+    a(href="/cadastro")
+      span.nav-icon ✎
+      | Editar dados
+    a(href="/login")
+      span.nav-icon ↪
+      | Sair
+
+script.
+  (function () {
+    const menuToggle = document.getElementById('menu-toggle');
+    const sideMenu = document.querySelector('.side-menu');
+    const menuTrigger = document.getElementById('menu-trigger');
+
+    menuTrigger.addEventListener('click', function (event) {
+      event.preventDefault();
+      menuToggle.checked = !menuToggle.checked;
+      sideMenu.classList.toggle('is-dismissed', !menuToggle.checked);
+    });
+  }());

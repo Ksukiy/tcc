@@ -6,21 +6,68 @@ html(lang="pt-BR")
     title Sistema de Gerenciamento de Estoque
     link(rel='stylesheet', href='/stylesheets/style.css')
 
-  body
-    .container
-      header.header.page-header
-        h1 Gerenciamento de Estoque
-        a.btn-back(href="/login") ⬅
+  body.home-body
+    include menu.pug
+
+    main.home-shell
+      header.home-header
+        .home-header__copy
+          h1 Gerenciamento de Estoque
+          p Escolha uma área para continuar.
 
       main.dashboard-grid
-        a.btn-category(href="/equipamentos")
-          h2 Equipamentos
+        a.btn-category.card-equipment(href="/equipamentos")
+          span.card-image(aria-hidden="true")
+          span.card-title Equipamentos
+            span.card-arrow ↗
 
-        a.btn-category(href="/acessorios")
-          h2 Acessórios
+        a.btn-category.card-accessories(href="/acessorios")
+          span.card-image(aria-hidden="true")
+          span.card-title Acessórios
+            span.card-arrow ↗
 
-        a.btn-category(href="/veiculos")
-          h2 Veículos
+        a.btn-category.card-vehicles(href="/veiculos")
+          span.card-image(aria-hidden="true")
+          span.card-title Veículos
+            span.card-arrow ↗
 
-        a.btn-category(href="/clientes")
-          h2 Clientes
+        a.btn-category.card-clients(href="/clientes")
+          span.card-image(aria-hidden="true")
+          span.card-title Clientes
+            span.card-arrow ↗
+
+      section.home-dashboard(aria-labelledby="dashboard-title")
+        .dashboard-heading
+          .dashboard-heading__copy
+            p.dashboard-kicker RESUMO DO SISTEMA
+            h2#dashboard-title Visão rápida
+          span.dashboard-date Painel principal
+
+        .dashboard-stats
+          .dashboard-stat
+            span.dashboard-stat__icon ◈
+            strong 04
+            span Módulos disponíveis
+          .dashboard-stat
+            span.dashboard-stat__icon +
+            strong Novo
+            span Cadastro de itens
+          .dashboard-stat
+            span.dashboard-stat__icon ↗
+            strong Direto
+            span Acesso às listagens
+          .dashboard-stat.dashboard-stat--accent
+            span.dashboard-stat__icon ✓
+            strong Ativo
+            span Painel operacional
+
+        .dashboard-links
+          a(href="/adicionar?tipo=Equipamento")
+            span.dashboard-link__label Adicionar equipamento
+            span.dashboard-link__arrow ↗
+          a(href="/adicionar?tipo=Acessório")
+            span.dashboard-link__label Adicionar acessório
+            span.dashboard-link__arrow ↗
+          a(href="/adicionar?tipo=Veículo")
+            span.dashboard-link__label Adicionar veículo
+            span.dashboard-link__arrow ↗

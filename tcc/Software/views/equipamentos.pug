@@ -7,12 +7,17 @@ html(lang="pt-BR")
     link(rel='stylesheet', href='/stylesheets/style.css')
 
   body
+    include menu.pug
+    a.page-back(href="/inicio") Voltar
     .container
+      nav.breadcrumbs(aria-label="Navegação estrutural")
+        a(href="/inicio") Início
+        span(aria-hidden="true") /
+        span Equipamentos
       header.header
         h1 Lista de Equipamentos
         .header-actions
           a.btn-add(href="/adicionar?tipo=Equipamento") Adicionar equipamento
-          a.btn-back(href="/inicio") Voltar para tela inicial
 
       main.table-container
         table

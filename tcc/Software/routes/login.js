@@ -16,7 +16,7 @@ router.post('/', function(req, res, next) {
   }
 
   // TODO: replace with real authentication
-  return res.redirect('/inicio');
+  return res.redirect('/inicio?usuario=' + encodeURIComponent(email));
 });
 
 module.exports = router;

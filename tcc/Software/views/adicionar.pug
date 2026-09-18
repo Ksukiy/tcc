@@ -1,10 +1,15 @@
 extends layout
 
 block content
+  include menu.pug
+  a.page-back(href="/inicio") Voltar
   .container
+    nav.breadcrumbs(aria-label="Navegação estrutural")
+      a(href="/inicio") Início
+      span(aria-hidden="true") /
+      span Adicionar objeto
     header.header
       h1 Adicionar objeto
-      a.btn-back(href="/inicio") Voltar para tela inicial
 
     main.form-container
       form.object-form(action='/adicionar' method='post')
