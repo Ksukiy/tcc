@@ -12,22 +12,94 @@ block content
       h1 Adicionar objeto
 
     main.form-container
+      if message
+        p.error= message
       form.object-form(action='/adicionar' method='post')
         label(for='tipo') Tipo de objeto
         select#tipo(name='tipo' required)
           each tipo in tipos
             option(value=tipo selected=tipo === tipoSelecionado)= tipo
 
-        label(for='nome') Nome/Modelo
-        input#nome(type='text' name='nome' placeholder='Digite o nome ou modelo' required)
+        .object-fields(data-tipo='Veículo')
+          label(for='marca') Marca
+          input#marca(type='text' name='marca' placeholder='Digite a marca')
 
-        label(for='numeroSerie') Número de Série
-        input#numeroSerie(type='text' name='numeroSerie' placeholder='Digite o número de série' required)
+          label(for='modeloVeiculo') Modelo
+          input#modeloVeiculo(type='text' name='modelo' placeholder='Digite o modelo')
 
-        label.checkbox-label(for='ativo')
-          input#ativo(type='checkbox' name='ativo' checked)
-          | Objeto ativo
+          label(for='anoVeiculo') Ano
+          input#anoVeiculo(type='number' name='ano' min='1900' max='2100' placeholder='Digite o ano')
+
+          label(for='placa') Placa
+          input#placa(type='text' name='placa' placeholder='Digite a placa')
+
+        .object-fields(data-tipo='Equipamento')
+          label(for='numeroSerie') Número de Série
+          input#numeroSerie(type='text' name='numeroSerie' placeholder='Digite o número de série')
+
+          label(for='tecnologia') Tecnologia
+          input#tecnologia(type='text' name='tecnologia' placeholder='Digite a tecnologia')
+
+          label(for='modeloEquipamento') Modelo
+          input#modeloEquipamento(type='text' name='modelo' placeholder='Digite o modelo')
+
+          label(for='anoAquisicao') Ano de Aquisição
+          input#anoAquisicao(type='number' name='anoAquisicao' min='1900' max='2100' placeholder='Digite o ano')
+
+          label(for='statusEquipamento') Status
+          input#statusEquipamento(type='text' name='status' placeholder='Digite o status')
+
+          label.checkbox-label(for='locadoEquipamento')
+            input#locadoEquipamento(type='checkbox' name='locado')
+            | Equipamento locado
+
+        .object-fields(data-tipo='Acessório')
+          label(for='tipoAcessorio') Tipo
+          input#tipoAcessorio(type='text' name='tipoAcessorio' placeholder='Digite o tipo')
+
+          label(for='modeloAcessorio') Modelo
+          input#modeloAcessorio(type='text' name='modelo' placeholder='Digite o modelo')
+
+          label(for='statusAcessorio') Status
+          input#statusAcessorio(type='text' name='status' placeholder='Digite o status')
+
+          label.checkbox-label(for='locadoAcessorio')
+            input#locadoAcessorio(type='checkbox' name='locado')
+            | Acessório locado
+
+        .object-fields(data-tipo='Cliente')
+          label(for='nome') Nome
+          input#nome(type='text' name='nome' placeholder='Digite o nome')
+
+          label(for='fone') Fone
+          input#fone(type='tel' name='fone' placeholder='Digite o telefone')
+
+          label(for='tipoCliente') Tipo de Cliente
+          input#tipoCliente(type='text' name='tipoCliente' placeholder='Digite o tipo de cliente')
+
+          label(for='cpfCnpj') CPF/CNPJ
+          input#cpfCnpj(type='text' name='cpfCnpj' placeholder='Digite o CPF ou CNPJ')
 
         .form-actions
           button.btn(type='submit') Adicionar objeto
           a.cancel(href="/inicio") Cancelar
+
+    script.
+      (function () {
+        var tipoSelect = document.getElementById('tipo');
+        var fieldGroups = document.querySelectorAll('.object-fields');
+
+        function updateFields() {
+          fieldGroups.forEach(function (group) {
+            var isSelected = group.dataset.tipo === tipoSelect.value;
+            group.hidden = !isSelected;
+            group.querySelectorAll('input').forEach(function (input) {
+              input.disabled = !isSelected;
+              input.required = isSelected && input.type !== 'checkbox';
+            });
+          });
+        }
+
+        tipoSelect.addEventListener('change', updateFields);
+        updateFields();
+      }());

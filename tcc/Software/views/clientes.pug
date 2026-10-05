@@ -29,6 +29,7 @@ html(lang="pt-BR")
               th Cpf/Cnpj
               th ID
               th Status
+              th Ações
           tbody
             if clientes && clientes.length > 0
               each item in clientes
@@ -38,11 +39,9 @@ html(lang="pt-BR")
                   td= item.tipoCliente || "Não informado"
                   td= item.cpfCnpj || "Não informado"
                   td= item.id || "Não informado"
-                  td
-                    if item.ativo
-                      span.badge.badge-active Sim
-                    else
-                      span.badge.badge-inactive Não
+                  td.table-action
+                    form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                      button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="6") Nenhum cliente encontrado.
+                td.empty-state(colspan="7") Nenhum cliente encontrado.

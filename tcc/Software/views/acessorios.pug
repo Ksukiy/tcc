@@ -28,6 +28,7 @@ html(lang="pt-BR")
               th Locado
               th Status
               th ID
+              th Ações
           tbody
             if acessorios && acessorios.length > 0
               each item in acessorios
@@ -37,11 +38,9 @@ html(lang="pt-BR")
                   td= item.locado ? "Sim" : "Não"
                   td= item.status || "Não informado"
                   td= item.id || "Não informado"
-                  td
-                    if item.ativo
-                      span.badge.badge-active Sim
-                    else
-                      span.badge.badge-inactive Não
+                  td.table-action
+                    form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                      button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="5") Nenhum acessório encontrado no estoque.
+                td.empty-state(colspan="6") Nenhum acessório encontrado no estoque.

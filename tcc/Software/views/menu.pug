@@ -13,7 +13,7 @@ aside.side-menu
       span Usuário conectado
       strong= usuario || 'Visitante'
   nav.side-nav(aria-label="Menu do usuário")
-    a(href="/cadastro")
+    a(href=usuario ? '/perfil?usuario=' + encodeURIComponent(usuario) : '/perfil')
       span.nav-icon ✎
       | Editar dados
     a(href="/login")

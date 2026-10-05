@@ -12,6 +12,8 @@ var acessoriosRouter = require('./routes/acessorios');
 var loginRouter = require('./routes/login');
 var cadastroRouter = require('./routes/cadastro');
 var adicionarRouter = require('./routes/adicionar');
+var perfilRouter = require('./routes/perfil');
+var objetosRouter = require('./routes/objetos');
 
 var app = express();
 
@@ -33,6 +35,8 @@ app.use('/acessorios', require('./routes/acessorios'));
 app.use('/login', require('./routes/login'));
 app.use('/cadastro', cadastroRouter);
 app.use('/adicionar', adicionarRouter);
+app.use('/perfil', perfilRouter);
+app.use('/objetos', objetosRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -30,6 +30,7 @@ html(lang="pt-BR")
               th Ano de Aquisição
               th Status
               th ID
+              th Ações
           tbody
             if equipamentos && equipamentos.length > 0
               each item in equipamentos
@@ -42,10 +43,9 @@ html(lang="pt-BR")
                   td= item.status || "Não informado"
                   td= item.id || "Não informado"
                   td
-                    if item.ativo
-                      span.badge.badge-active Sim
-                    else
-                      span.badge.badge-inactive Não
+                  td.table-action
+                    form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                      button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="7") Nenhum equipamento encontrado no estoque.
+                td.empty-state(colspan="8") Nenhum equipamento encontrado no estoque.

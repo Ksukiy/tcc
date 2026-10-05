@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  include menu.pug
+  main.home-shell.profile-shell
+    header.home-header.profile-header
+      .home-header__copy
+        p.dashboard-kicker CONFIGURAÇÕES DA CONTA
+        h1 Meu perfil
+      a.btn-back(href="/inicio") Voltar ao início
+
+    section.home-dashboard.profile-dashboard(aria-labelledby="profile-title")
+      .dashboard-heading
+        .dashboard-heading__copy
+          p.dashboard-kicker PERFIL ATUAL
+          h2#profile-title= email || 'E-mail não informado'
+        span.dashboard-date Acesso pessoal
+
+      if message
+        p.error= message
+
+      .profile-content
+
+        form.login-form.profile-form(action='/perfil' method='post')
+          label(for='email') E-mail
+          input#email(type='email' name='email' value=email placeholder='exemplo@exemplo.com' required)
+
+          label(for='senhaAtual') Senha atual
+          input#senhaAtual(type='password' name='senhaAtual' placeholder='Digite sua senha atual' required)
+
+          .profile-section
+            h2 Redefinir senha
+            p.profile-help Preencha os campos abaixo somente se quiser trocar sua senha.
+
+            label(for='novaSenha') Nova senha
+            input#novaSenha(type='password' name='novaSenha' placeholder='Digite a nova senha' minlength='6')
+
+            label(for='confirmarSenha') Confirmar nova senha
+            input#confirmarSenha(type='password' name='confirmarSenha' placeholder='Repita a nova senha' minlength='6')
+
+          .form-actions
+            button.btn(type='submit') Salvar alterações
+            a.cancel(href="/inicio") Cancelar
