@@ -2,7 +2,9 @@ extends layout
 
 block content
   include menu.pug
-  a.page-back(href="/inicio") Voltar
+  - var paginaAnterior = backUrl || (tipoSelecionado === 'Equipamento' ? '/equipamentos' : tipoSelecionado === 'Acessório' ? '/acessorios' : tipoSelecionado === 'Veículo' ? '/veiculos' : tipoSelecionado === 'Cliente' ? '/clientes' : '/inicio')
+  - if (paginaAnterior === '/inicio' && tipoSelecionado === 'Equipamento') paginaAnterior = '/equipamentos'
+  a.page-back(href=paginaAnterior) Voltar
   .container
     nav.breadcrumbs(aria-label="Navegação estrutural")
       a(href="/inicio") Início
@@ -15,6 +17,7 @@ block content
       if message
         p.error= message
       form.object-form(action='/adicionar' method='post')
+        input(type='hidden' name='voltar' value=paginaAnterior)
         label(for='tipo') Tipo de objeto
         select#tipo(name='tipo' required)
           each tipo in tipos
@@ -33,6 +36,8 @@ block content
           label(for='placa') Placa
           input#placa(type='text' name='placa' placeholder='Digite a placa')
 
+        - var statusLista = statusOpcoes || ['Locado', 'Disponível', 'Em Manutenção']
+
         .object-fields(data-tipo='Equipamento')
           label(for='numeroSerie') Número de Série
           input#numeroSerie(type='text' name='numeroSerie' placeholder='Digite o número de série')
@@ -47,11 +52,9 @@ block content
           input#anoAquisicao(type='number' name='anoAquisicao' min='1900' max='2100' placeholder='Digite o ano')
 
           label(for='statusEquipamento') Status
-          input#statusEquipamento(type='text' name='status' placeholder='Digite o status')
-
-          label.checkbox-label(for='locadoEquipamento')
-            input#locadoEquipamento(type='checkbox' name='locado')
-            | Equipamento locado
+          select#statusEquipamento(name='status' required)
+            each status in statusLista
+              option(value=status)= status
 
         .object-fields(data-tipo='Acessório')
           label(for='tipoAcessorio') Tipo
@@ -61,11 +64,9 @@ block content
           input#modeloAcessorio(type='text' name='modelo' placeholder='Digite o modelo')
 
           label(for='statusAcessorio') Status
-          input#statusAcessorio(type='text' name='status' placeholder='Digite o status')
-
-          label.checkbox-label(for='locadoAcessorio')
-            input#locadoAcessorio(type='checkbox' name='locado')
-            | Acessório locado
+          select#statusAcessorio(name='status' required)
+            each status in statusLista
+              option(value=status)= status
 
         .object-fields(data-tipo='Cliente')
           label(for='nome') Nome
@@ -82,7 +83,7 @@ block content
 
         .form-actions
           button.btn(type='submit') Adicionar objeto
-          a.cancel(href="/inicio") Cancelar
+          a.cancel(href=paginaAnterior) Cancelar
 
     script.
       (function () {
@@ -93,9 +94,9 @@ block content
           fieldGroups.forEach(function (group) {
             var isSelected = group.dataset.tipo === tipoSelect.value;
             group.hidden = !isSelected;
-            group.querySelectorAll('input').forEach(function (input) {
-              input.disabled = !isSelected;
-              input.required = isSelected && input.type !== 'checkbox';
+            group.querySelectorAll('input, select, textarea').forEach(function (field) {
+              field.disabled = !isSelected;
+              field.required = isSelected && field.type !== 'checkbox';
             });
           });
         }

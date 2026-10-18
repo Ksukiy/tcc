@@ -10,14 +10,34 @@ html(lang="pt-BR")
     include menu.pug
     a.page-back(href="/inicio") Voltar
     .container
-      nav.breadcrumbs(aria-label="Navegação estrutural")
-        a(href="/inicio") Início
-        span(aria-hidden="true") /
-        span Clientes
+      .page-meta
+        nav.breadcrumbs(aria-label="Navegação estrutural")
+          a(href="/inicio") Início
+          span(aria-hidden="true") /
+          span Clientes
+        nav.list-navigation(aria-label="Outras áreas")
+          a(href='/equipamentos') Equipamentos
+          a(href='/acessorios') Acessórios
+          a(href='/veiculos') Veículos
       header.header
         h1 Lista de Clientes
         .header-actions
           a.btn-add(href="/adicionar?tipo=Cliente") Adicionar cliente
+
+      - var filtrosAtuais = filtros || {}
+
+      form.list-filters(action='/clientes' method='get')
+        .search-field
+          label(for='busca') Buscar
+          input#busca(type='search' name='busca' value=filtrosAtuais.busca placeholder='Nome, telefone ou CPF/CNPJ')
+        button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-clientes') Filtrar
+        .filter-panel#filtros-clientes(hidden)
+          strong Opções de filtragem
+          label(for='tipoCliente') Tipo de cliente
+          input#tipoCliente(type='search' name='tipoCliente' value=filtrosAtuais.tipoCliente placeholder='Ex.: Pessoa física')
+          .filter-actions
+            button.btn(type='submit') Aplicar filtros
+            a.clear-filters(href='/clientes') Limpar
 
       main.table-container
         table
@@ -28,7 +48,6 @@ html(lang="pt-BR")
               th Tipo de Cliente
               th Cpf/Cnpj
               th ID
-              th Status
               th Ações
           tbody
             if clientes && clientes.length > 0
@@ -40,8 +59,12 @@ html(lang="pt-BR")
                   td= item.cpfCnpj || "Não informado"
                   td= item.id || "Não informado"
                   td.table-action
-                    form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
-                      button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
+                    .action-buttons
+                      a.btn-edit(href='/objetos/' + item.id + '/editar?voltar=/clientes' aria-label='Editar objeto' title='Editar objeto') &#9998;
+                      form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                        button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="7") Nenhum cliente encontrado.
+                td.empty-state(colspan="6") Nenhum cliente encontrado.
+
+      script(src='/javascripts/list-filters.js')

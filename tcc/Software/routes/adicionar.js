@@ -3,34 +3,54 @@ var router = express.Router();
 var objetos = require('../lib/objetos');
 
 var tipos = ['Equipamento', 'Acessório', 'Veículo', 'Cliente'];
+var statusOpcoes = ['Locado', 'Disponível', 'Em Manutenção'];
+var destinosPorTipo = {
+  'Equipamento': '/equipamentos',
+  'Acessório': '/acessorios',
+  'Veículo': '/veiculos',
+  'Cliente': '/clientes'
+};
+var paginasLista = ['/equipamentos', '/acessorios', '/veiculos', '/clientes'];
+
+function obterUrlDeRetorno(url, tipo) {
+  return paginasLista.indexOf(url) >= 0 ? url : destinosPorTipo[tipo] || '/inicio';
+}
 
 function renderFormulario(res, dados) {
   res.render('adicionar', Object.assign({
     title: 'Adicionar objeto',
     tipos: tipos,
-    tipoSelecionado: 'Equipamento'
+    statusOpcoes: statusOpcoes,
+    tipoSelecionado: 'Equipamento',
+    backUrl: '/inicio'
   }, dados));
 }
 
 router.get('/', function(req, res, next) {
   var tipoSelecionado = tipos.indexOf(req.query.tipo) >= 0 ? req.query.tipo : 'Equipamento';
 
-  renderFormulario(res, { tipoSelecionado: tipoSelecionado });
+  renderFormulario(res, {
+    tipoSelecionado: tipoSelecionado,
+    backUrl: obterUrlDeRetorno(req.query.voltar, tipoSelecionado)
+  });
 });
 
 router.post('/', function(req, res, next) {
-  var destinos = {
-    'Equipamento': '/equipamentos',
-    'Acessório': '/acessorios',
-    'Veículo': '/veiculos',
-    'Cliente': '/clientes'
-  };
   var tipo = req.body.tipo;
 
   if (tipos.indexOf(tipo) < 0) {
     return renderFormulario(res.status(400), {
       tipoSelecionado: 'Equipamento',
-      message: 'Selecione um tipo de objeto válido.'
+      message: 'Selecione um tipo de objeto válido.',
+      backUrl: obterUrlDeRetorno(req.body.voltar, tipo)
+    });
+  }
+
+  if ((tipo === 'Equipamento' || tipo === 'Acessório') && statusOpcoes.indexOf(req.body.status) < 0) {
+    return renderFormulario(res.status(400), {
+      tipoSelecionado: tipo,
+      message: 'Selecione um status válido.',
+      backUrl: obterUrlDeRetorno(req.body.voltar, tipo)
     });
   }
 
@@ -49,12 +69,12 @@ router.post('/', function(req, res, next) {
     tipoCliente: req.body.tipoCliente,
     fone: req.body.fone,
     cpfCnpj: req.body.cpfCnpj,
-    locado: req.body.locado === 'on'
+    locado: req.body.status === 'Locado'
   };
 
   objetos.adicionarObjeto(objeto);
 
-  res.redirect(destinos[tipo]);
+  res.redirect(destinosPorTipo[tipo]);
 });
 
 module.exports = router;

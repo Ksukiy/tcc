@@ -5,7 +5,8 @@ var objetos = require('../lib/objetos');
 router.get('/', function(req, res, next) {
   res.render('veiculos', {
     title: 'Veículos',
-    veiculos: objetos.listarPorTipo('Veículo')
+    veiculos: objetos.filtrarPorTipo('Veículo', req.query),
+    filtros: req.query
   });
 });
 

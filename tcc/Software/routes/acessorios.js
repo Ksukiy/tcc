@@ -5,7 +5,8 @@ var objetos = require('../lib/objetos');
 router.get('/', function(req, res, next) {
   res.render('acessorios', {
     title: 'Acessórios',
-    acessorios: objetos.listarPorTipo('Acessório')
+    acessorios: objetos.filtrarPorTipo('Acessório', req.query),
+    filtros: req.query
   });
 });
 

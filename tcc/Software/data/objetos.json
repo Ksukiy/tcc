@@ -1,1 +1,41 @@
-[]
+[
+  {
+    "id": 1,
+    "tipo": "Equipamento",
+    "numeroSerie": "12312312",
+    "modelo": "teste",
+    "tecnologia": "teste",
+    "anoAquisicao": "1998",
+    "status": "Locado",
+    "locado": true
+  },
+  {
+    "id": 2,
+    "tipo": "Equipamento",
+    "numeroSerie": "14314341",
+    "modelo": "teste",
+    "tecnologia": "teste",
+    "anoAquisicao": "1999",
+    "status": "Disponível",
+    "locado": false
+  },
+  {
+    "id": 3,
+    "tipo": "Equipamento",
+    "numeroSerie": "98798798",
+    "modelo": "teste",
+    "tecnologia": "teste",
+    "anoAquisicao": "1999",
+    "status": "Em Manutenção",
+    "locado": false
+  },
+  {
+    "id": 4,
+    "tipo": "Cliente",
+    "nome": "claudio",
+    "tipoCliente": "teste",
+    "fone": "123123123",
+    "cpfCnpj": "1231231231",
+    "locado": false
+  }
+]

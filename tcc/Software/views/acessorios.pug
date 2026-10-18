@@ -10,14 +10,43 @@ html(lang="pt-BR")
     include menu.pug
     a.page-back(href="/inicio") Voltar
     .container
-      nav.breadcrumbs(aria-label="Navegação estrutural")
-        a(href="/inicio") Início
-        span(aria-hidden="true") /
-        span Acessórios
+      .page-meta
+        nav.breadcrumbs(aria-label="Navegação estrutural")
+          a(href="/inicio") Início
+          span(aria-hidden="true") /
+          span Acessórios
+        nav.list-navigation(aria-label="Outras áreas")
+          a(href='/equipamentos') Equipamentos
+          a(href='/veiculos') Veículos
+          a(href='/clientes') Clientes
       header.header
         h1 Lista de Acessórios
         .header-actions
           a.btn-add(href="/adicionar?tipo=Acessório") Adicionar acessório
+
+      - var filtrosAtuais = filtros || {}
+
+      form.list-filters(action='/acessorios' method='get')
+        .search-field
+          label(for='busca') Buscar
+          input#busca(type='search' name='busca' value=filtrosAtuais.busca placeholder='Tipo, modelo ou status')
+        button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-acessorios') Filtrar
+        .filter-panel#filtros-acessorios(hidden)
+          strong Opções de filtragem
+          label(for='locado') Locação
+          select#locado(name='locado')
+            option(value='') Todos
+            option(value='true' selected=filtrosAtuais.locado === 'true') Locados
+            option(value='false' selected=filtrosAtuais.locado === 'false') Disponíveis
+          label(for='status') Status
+          select#status(name='status')
+            option(value='') Todos
+            option(value='Locado' selected=filtrosAtuais.status === 'Locado') Locado
+            option(value='Disponível' selected=filtrosAtuais.status === 'Disponível') Disponível
+            option(value='Em Manutenção' selected=filtrosAtuais.status === 'Em Manutenção') Em Manutenção
+          .filter-actions
+            button.btn(type='submit') Aplicar filtros
+            a.clear-filters(href='/acessorios') Limpar
 
       main.table-container
         table
@@ -25,7 +54,6 @@ html(lang="pt-BR")
             tr
               th Tipo
               th Modelo
-              th Locado
               th Status
               th ID
               th Ações
@@ -35,12 +63,17 @@ html(lang="pt-BR")
                 tr
                   td= item.tipo || "Não informado"
                   td= item.modelo || "Não informado"
-                  td= item.locado ? "Sim" : "Não"
-                  td= item.status || "Não informado"
+                  td
+                    - var classeStatus = item.status === 'Locado' ? 'status-located' : item.status === 'Disponível' ? 'status-available' : item.status === 'Em Manutenção' ? 'status-maintenance' : 'status-unknown'
+                    span.status-badge(class=classeStatus)= item.status || "Não informado"
                   td= item.id || "Não informado"
                   td.table-action
-                    form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
-                      button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
+                    .action-buttons
+                      a.btn-edit(href='/objetos/' + item.id + '/editar?voltar=/acessorios' aria-label='Editar objeto' title='Editar objeto') &#9998;
+                      form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                        button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="6") Nenhum acessório encontrado no estoque.
+                td.empty-state(colspan="5") Nenhum acessório encontrado no estoque.
+
+      script(src='/javascripts/list-filters.js')

@@ -10,14 +10,43 @@ html(lang="pt-BR")
     include menu.pug
     a.page-back(href="/inicio") Voltar
     .container
-      nav.breadcrumbs(aria-label="Navegação estrutural")
-        a(href="/inicio") Início
-        span(aria-hidden="true") /
-        span Equipamentos
+      .page-meta
+        nav.breadcrumbs(aria-label="Navegação estrutural")
+          a(href="/inicio") Início
+          span(aria-hidden="true") /
+          span Equipamentos
+        nav.list-navigation(aria-label="Outras áreas")
+          a(href='/acessorios') Acessórios
+          a(href='/veiculos') Veículos
+          a(href='/clientes') Clientes
       header.header
         h1 Lista de Equipamentos
         .header-actions
           a.btn-add(href="/adicionar?tipo=Equipamento") Adicionar equipamento
+
+      - var filtrosAtuais = filtros || {}
+
+      form.list-filters(action='/equipamentos' method='get')
+        .search-field
+          label(for='busca') Buscar
+          input#busca(type='search' name='busca' value=filtrosAtuais.busca placeholder='Número de série, modelo ou tecnologia')
+        button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-equipamentos') Filtrar
+        .filter-panel#filtros-equipamentos(hidden)
+          strong Opções de filtragem
+          label(for='status') Status
+          select#status(name='status')
+            option(value='') Todos
+            option(value='Locado' selected=filtrosAtuais.status === 'Locado') Locado
+            option(value='Disponível' selected=filtrosAtuais.status === 'Disponível') Disponível
+            option(value='Em Manutenção' selected=filtrosAtuais.status === 'Em Manutenção') Em Manutenção
+          label(for='locado') Locação
+          select#locado(name='locado')
+            option(value='') Todos
+            option(value='true' selected=filtrosAtuais.locado === 'true') Locados
+            option(value='false' selected=filtrosAtuais.locado === 'false') Disponíveis
+          .filter-actions
+            button.btn(type='submit') Aplicar filtros
+            a.clear-filters(href='/equipamentos') Limpar
 
       main.table-container
         table
@@ -26,7 +55,6 @@ html(lang="pt-BR")
               th Número de Série
               th Tecnologia
               th Modelo
-              th Locado
               th Ano de Aquisição
               th Status
               th ID
@@ -38,14 +66,18 @@ html(lang="pt-BR")
                   td= item.numeroSerie || "Não informado"
                   td= item.tecnologia || "Não informado"
                   td= item.modelo || "Não informado"
-                  td= item.locado ? "Sim" : "Não"
                   td= item.anoAquisicao || "Não informado"
-                  td= item.status || "Não informado"
-                  td= item.id || "Não informado"
                   td
+                    - var classeStatus = item.status === 'Locado' ? 'status-located' : item.status === 'Disponível' ? 'status-available' : item.status === 'Em Manutenção' ? 'status-maintenance' : 'status-unknown'
+                    span.status-badge(class=classeStatus)= item.status || "Não informado"
+                  td= item.id || "Não informado"
                   td.table-action
-                    form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
-                      button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
+                    .action-buttons
+                      a.btn-edit(href='/objetos/' + item.id + '/editar?voltar=/equipamentos' aria-label='Editar objeto' title='Editar objeto') &#9998;
+                      form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                        button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="8") Nenhum equipamento encontrado no estoque.
+                td.empty-state(colspan="7") Nenhum equipamento encontrado no estoque.
+
+      script(src='/javascripts/list-filters.js')

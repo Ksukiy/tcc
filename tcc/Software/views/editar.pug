@@ -1,0 +1,80 @@
+extends layout
+
+block content
+  include menu.pug
+  - var paginaAnterior = backUrl || '/inicio'
+  a.page-back(href=paginaAnterior) Voltar
+  .container
+    nav.breadcrumbs(aria-label="Navegação estrutural")
+      a(href="/inicio") Início
+      span(aria-hidden="true") /
+      span Editar objeto
+    header.header
+      h1 Editar #{objeto.tipo}
+
+    main.form-container
+      if message
+        p.error= message
+      form.object-form(action='/objetos/' + objeto.id + '/editar' method='post')
+        input(type='hidden' name='voltar' value=paginaAnterior)
+        input(type='hidden' name='tipo' value=objeto.tipo)
+
+        if objeto.tipo === 'Veículo'
+          label(for='marca') Marca
+          input#marca(type='text' name='marca' value=objeto.marca placeholder='Digite a marca' required)
+
+          label(for='modelo') Modelo
+          input#modelo(type='text' name='modelo' value=objeto.modelo placeholder='Digite o modelo' required)
+
+          label(for='ano') Ano
+          input#ano(type='number' name='ano' value=objeto.ano min='1900' max='2100' placeholder='Digite o ano' required)
+
+          label(for='placa') Placa
+          input#placa(type='text' name='placa' value=objeto.placa placeholder='Digite a placa' required)
+
+        if objeto.tipo === 'Equipamento'
+          label(for='numeroSerie') Número de Série
+          input#numeroSerie(type='text' name='numeroSerie' value=objeto.numeroSerie placeholder='Digite o número de série' required)
+
+          label(for='tecnologia') Tecnologia
+          input#tecnologia(type='text' name='tecnologia' value=objeto.tecnologia placeholder='Digite a tecnologia' required)
+
+          label(for='modelo') Modelo
+          input#modelo(type='text' name='modelo' value=objeto.modelo placeholder='Digite o modelo' required)
+
+          label(for='anoAquisicao') Ano de Aquisição
+          input#anoAquisicao(type='number' name='anoAquisicao' value=objeto.anoAquisicao min='1900' max='2100' placeholder='Digite o ano' required)
+
+          label(for='status') Status
+          select#status(name='status' required)
+            each status in statusOpcoes
+              option(value=status selected=status === objeto.status)= status
+
+        if objeto.tipo === 'Acessório'
+          label(for='tipoAcessorio') Tipo
+          input#tipoAcessorio(type='text' name='tipoAcessorio' value=objeto.tipoAcessorio placeholder='Digite o tipo' required)
+
+          label(for='modelo') Modelo
+          input#modelo(type='text' name='modelo' value=objeto.modelo placeholder='Digite o modelo' required)
+
+          label(for='status') Status
+          select#status(name='status' required)
+            each status in statusOpcoes
+              option(value=status selected=status === objeto.status)= status
+
+        if objeto.tipo === 'Cliente'
+          label(for='nome') Nome
+          input#nome(type='text' name='nome' value=objeto.nome placeholder='Digite o nome' required)
+
+          label(for='fone') Fone
+          input#fone(type='tel' name='fone' value=objeto.fone placeholder='Digite o telefone' required)
+
+          label(for='tipoCliente') Tipo de Cliente
+          input#tipoCliente(type='text' name='tipoCliente' value=objeto.tipoCliente placeholder='Digite o tipo de cliente' required)
+
+          label(for='cpfCnpj') CPF/CNPJ
+          input#cpfCnpj(type='text' name='cpfCnpj' value=objeto.cpfCnpj placeholder='Digite o CPF ou CNPJ' required)
+
+        .form-actions
+          button.btn(type='submit') Salvar alterações
+          a.cancel(href=paginaAnterior) Cancelar
