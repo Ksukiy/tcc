@@ -5,7 +5,7 @@
     "numeroSerie": "12312312",
     "modelo": "teste",
     "tecnologia": "teste",
-    "anoAquisicao": "1998",
+    "anoAquisicao": "1997",
     "status": "Locado",
     "locado": true
   },
@@ -27,15 +27,6 @@
     "tecnologia": "teste",
     "anoAquisicao": "1999",
     "status": "Em Manutenção",
-    "locado": false
-  },
-  {
-    "id": 4,
-    "tipo": "Cliente",
-    "nome": "claudio",
-    "tipoCliente": "teste",
-    "fone": "123123123",
-    "cpfCnpj": "1231231231",
     "locado": false
   }
 ]
