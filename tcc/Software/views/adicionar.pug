@@ -2,10 +2,14 @@ extends layout
 
 block content
   include menu.pug
+  - var tecnologiaLista = tecnologiaOpcoes || ['2G', '4G']
+  - var modeloLista = modeloOpcoes || ['RST - OBDII', 'RST - Mini LC', 'RST MINI - LC', 'RST Mini', 'RST LCv5', 'RST One', 'RST MÓVEL RF', 'RST ISCA GPS LORA', 'RST Plus', 'RST Híbrido', 'RST Micro', 'RST - Globalstar', 'NT40', 'NONOS-N4']
+  - var tipoAcessorioLista = tipoAcessorioOpcoes || ['Bloqueador', 'Leitor', 'Chaveiro']
+  - var modelosAcessorioJson = JSON.stringify(modelosAcessorio || { Bloqueador: ['Relé de Bloqueio'], Leitor: ['Ibutton'], Chaveiro: ['Ibutton'] })
   - var paginaAnterior = backUrl || (tipoSelecionado === 'Equipamento' ? '/equipamentos' : tipoSelecionado === 'Acessório' ? '/acessorios' : tipoSelecionado === 'Veículo' ? '/veiculos' : tipoSelecionado === 'Cliente' ? '/clientes' : '/inicio')
   - if (paginaAnterior === '/inicio' && tipoSelecionado === 'Equipamento') paginaAnterior = '/equipamentos'
-  a.page-back(href=paginaAnterior) Voltar
-  .container
+  a.page-back.add-object-back(href=paginaAnterior) Voltar
+  .container.add-object-page
     nav.breadcrumbs(aria-label="Navegação estrutural")
       a(href="/inicio") Início
       span(aria-hidden="true") /
@@ -43,28 +47,49 @@ block content
           input#numeroSerie(type='text' name='numeroSerie' placeholder='Digite o número de série')
 
           label(for='tecnologia') Tecnologia
-          input#tecnologia(type='text' name='tecnologia' placeholder='Digite a tecnologia')
+          select#tecnologia(name='tecnologia' required)
+            option(value='') Selecione a tecnologia
+            each tecnologia in tecnologiaLista
+              option(value=tecnologia)= tecnologia
+            option(value='__nova_entrada__') Adicionar nova entrada
+          input#novaTecnologia(type='text' placeholder='Digite a nova tecnologia' hidden)
 
           label(for='modeloEquipamento') Modelo
-          input#modeloEquipamento(type='text' name='modelo' placeholder='Digite o modelo')
+          select#modeloEquipamento(name='modelo' required)
+            option(value='') Selecione o modelo
+            each modelo in modeloLista
+              option(value=modelo)= modelo
+            option(value='__nova_entrada__') Adicionar nova entrada
+          input#novoModelo(type='text' placeholder='Digite o novo modelo' hidden)
 
           label(for='anoAquisicao') Ano de Aquisição
           input#anoAquisicao(type='number' name='anoAquisicao' min='1900' max='2100' placeholder='Digite o ano')
 
           label(for='statusEquipamento') Status
           select#statusEquipamento(name='status' required)
+            option(value='') Selecione o status
             each status in statusLista
               option(value=status)= status
 
         .object-fields(data-tipo='Acessório')
           label(for='tipoAcessorio') Tipo
-          input#tipoAcessorio(type='text' name='tipoAcessorio' placeholder='Digite o tipo')
+          select#tipoAcessorio(name='tipoAcessorio' required)
+            option(value='') Selecione o tipo
+            each tipoAcessorio in tipoAcessorioLista
+              option(value=tipoAcessorio)= tipoAcessorio
+            option(value='__nova_entrada__') Adicionar nova entrada
+          input#novoTipoAcessorio(type='text' placeholder='Digite o novo tipo' hidden)
 
-          label(for='modeloAcessorio') Modelo
-          input#modeloAcessorio(type='text' name='modelo' placeholder='Digite o modelo')
+          .accessory-model-fields(hidden)
+            label(for='modeloAcessorio') Modelo
+            select#modeloAcessorio(name='modelo' required)
+              option(value='') Selecione o modelo
+              option(value='__nova_entrada__') Adicionar nova entrada
+            input#novoModeloAcessorio(type='text' placeholder='Digite o novo modelo' hidden)
 
           label(for='statusAcessorio') Status
           select#statusAcessorio(name='status' required)
+            option(value='') Selecione o status
             each status in statusLista
               option(value=status)= status
 
@@ -89,6 +114,82 @@ block content
       (function () {
         var tipoSelect = document.getElementById('tipo');
         var fieldGroups = document.querySelectorAll('.object-fields');
+        var equipamentoGroup = document.querySelector('[data-tipo="Equipamento"]');
+        var acessorioGroup = document.querySelector('[data-tipo="Acessório"]');
+        var equipamentoForm = document.querySelector('.object-form');
+        var tipoAcessorioSelect = acessorioGroup.querySelector('#tipoAcessorio');
+        var modeloAcessorioFields = acessorioGroup.querySelector('.accessory-model-fields');
+        var modeloAcessorioSelect = acessorioGroup.querySelector('#modeloAcessorio');
+        var modelosAcessorio = !{modelosAcessorioJson};
+        if (!Object.keys(modelosAcessorio).length) {
+          modelosAcessorio = {
+            Bloqueador: ['Relé de Bloqueio'],
+            Leitor: ['Ibutton'],
+            Chaveiro: ['Ibutton']
+          };
+        }
+        var customEntries = [
+          {
+            select: equipamentoGroup.querySelector('#tecnologia'),
+            input: equipamentoGroup.querySelector('#novaTecnologia')
+          },
+          {
+            select: equipamentoGroup.querySelector('#modeloEquipamento'),
+            input: equipamentoGroup.querySelector('#novoModelo')
+          },
+          {
+            select: acessorioGroup.querySelector('#tipoAcessorio'),
+            input: acessorioGroup.querySelector('#novoTipoAcessorio')
+          },
+          {
+            select: modeloAcessorioSelect,
+            input: acessorioGroup.querySelector('#novoModeloAcessorio')
+          }
+        ];
+
+        function updateAccessoryModels() {
+          var tipo = tipoAcessorioSelect.value;
+          var modelos = modelosAcessorio[tipo] || [];
+          var groupSelected = !acessorioGroup.hidden;
+          var shouldShow = groupSelected && Boolean(tipo) && tipo !== '__nova_entrada__';
+
+          modeloAcessorioSelect.innerHTML = '<option value="">Selecione o modelo</option>';
+          modelos.forEach(function (modelo) {
+            var option = document.createElement('option');
+            option.value = modelo;
+            option.textContent = modelo;
+            modeloAcessorioSelect.appendChild(option);
+          });
+
+          var newOption = document.createElement('option');
+          newOption.value = '__nova_entrada__';
+          newOption.textContent = 'Adicionar nova entrada';
+          modeloAcessorioSelect.appendChild(newOption);
+          modeloAcessorioFields.hidden = !shouldShow;
+          modeloAcessorioFields.toggleAttribute('hidden', !shouldShow);
+          modeloAcessorioSelect.disabled = !shouldShow;
+          modeloAcessorioSelect.required = shouldShow;
+          if (!shouldShow) {
+            modeloAcessorioSelect.value = '';
+          }
+        }
+
+        function updateCustomEntry(entry) {
+          var isNewEntry = entry.select.value === '__nova_entrada__';
+          var groupSelected = !entry.select.closest('.object-fields').hidden;
+          entry.input.hidden = !isNewEntry;
+          entry.input.disabled = !groupSelected || !isNewEntry;
+          entry.input.required = groupSelected && isNewEntry;
+          if (!isNewEntry) {
+            entry.input.value = '';
+          }
+        }
+
+        customEntries.forEach(function (entry) {
+          entry.select.addEventListener('change', function () {
+            updateCustomEntry(entry);
+          });
+        });
 
         function updateFields() {
           fieldGroups.forEach(function (group) {
@@ -99,8 +200,34 @@ block content
               field.required = isSelected && field.type !== 'checkbox';
             });
           });
+          updateAccessoryModels();
+          customEntries.forEach(updateCustomEntry);
         }
 
         tipoSelect.addEventListener('change', updateFields);
+        tipoAcessorioSelect.addEventListener('change', function () {
+          updateAccessoryModels();
+          customEntries.forEach(updateCustomEntry);
+        });
+        equipamentoForm.addEventListener('submit', function (event) {
+          customEntries.forEach(function (entry) {
+            if (entry.select.value !== '__nova_entrada__') {
+              return;
+            }
+
+            var customValue = entry.input.value.trim();
+            if (!customValue) {
+              event.preventDefault();
+              entry.input.focus();
+              return;
+            }
+
+            var option = document.createElement('option');
+            option.value = customValue;
+            option.textContent = customValue;
+            option.selected = true;
+            entry.select.appendChild(option);
+          });
+        });
         updateFields();
       }());

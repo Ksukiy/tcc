@@ -25,6 +25,7 @@ html(lang="pt-BR")
           a.btn-add(href="/adicionar?tipo=Cliente") Adicionar cliente
 
       - var filtrosAtuais = filtros || {}
+      - var tiposClienteLista = tiposCliente && tiposCliente.length ? tiposCliente : []
 
       form.list-filters(action='/clientes' method='get')
         .search-field
@@ -34,7 +35,10 @@ html(lang="pt-BR")
         .filter-panel#filtros-clientes(hidden)
           strong Opções de filtragem
           label(for='tipoCliente') Tipo de cliente
-          input#tipoCliente(type='search' name='tipoCliente' value=filtrosAtuais.tipoCliente placeholder='Ex.: Pessoa física')
+          select#tipoCliente(name='tipoCliente')
+            option(value='') Todos
+            each tipoCliente in tiposClienteLista
+              option(value=tipoCliente selected=filtrosAtuais.tipoCliente === tipoCliente)= tipoCliente
           .filter-actions
             button.btn(type='submit') Aplicar filtros
             a.clear-filters(href='/clientes') Limpar

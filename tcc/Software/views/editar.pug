@@ -2,6 +2,10 @@ extends layout
 
 block content
   include menu.pug
+  - var tecnologiaLista = tecnologiaOpcoes || ['2G', '4G']
+  - var modeloLista = modeloOpcoes || ['RST - OBDII', 'RST - Mini LC', 'RST MINI - LC', 'RST Mini', 'RST LCv5', 'RST One', 'RST MÓVEL RF', 'RST ISCA GPS LORA', 'RST Plus', 'RST Híbrido', 'RST Micro', 'RST - Globalstar', 'NT40', 'NONOS-N4']
+  - var tecnologiaAtualNaLista = tecnologiaLista.indexOf(objeto.tecnologia) >= 0
+  - var modeloAtualNaLista = modeloLista.indexOf(objeto.modelo) >= 0
   - var paginaAnterior = backUrl || '/inicio'
   a.page-back(href=paginaAnterior) Voltar
   .container
@@ -37,10 +41,24 @@ block content
           input#numeroSerie(type='text' name='numeroSerie' value=objeto.numeroSerie placeholder='Digite o número de série' required)
 
           label(for='tecnologia') Tecnologia
-          input#tecnologia(type='text' name='tecnologia' value=objeto.tecnologia placeholder='Digite a tecnologia' required)
+          select#tecnologia(name='tecnologia' required)
+            option(value='') Selecione a tecnologia
+            each tecnologia in tecnologiaLista
+              option(value=tecnologia selected=tecnologia === objeto.tecnologia)= tecnologia
+            if !tecnologiaAtualNaLista && objeto.tecnologia
+              option(value=objeto.tecnologia selected=true)= objeto.tecnologia
+            option(value='__nova_entrada__') Adicionar nova entrada
+          input#novaTecnologia(type='text' placeholder='Digite a nova tecnologia' hidden)
 
           label(for='modelo') Modelo
-          input#modelo(type='text' name='modelo' value=objeto.modelo placeholder='Digite o modelo' required)
+          select#modelo(name='modelo' required)
+            option(value='') Selecione o modelo
+            each modelo in modeloLista
+              option(value=modelo selected=modelo === objeto.modelo)= modelo
+            if !modeloAtualNaLista && objeto.modelo
+              option(value=objeto.modelo selected=true)= objeto.modelo
+            option(value='__nova_entrada__') Adicionar nova entrada
+          input#novoModelo(type='text' placeholder='Digite o novo modelo' hidden)
 
           label(for='anoAquisicao') Ano de Aquisição
           input#anoAquisicao(type='number' name='anoAquisicao' value=objeto.anoAquisicao min='1900' max='2100' placeholder='Digite o ano' required)
@@ -78,3 +96,52 @@ block content
         .form-actions
           button.btn(type='submit') Salvar alterações
           a.cancel(href=paginaAnterior) Cancelar
+
+    if objeto.tipo === 'Equipamento'
+      script.
+        (function () {
+          var form = document.querySelector('.object-form');
+          var entries = [
+            {
+              select: document.getElementById('tecnologia'),
+              input: document.getElementById('novaTecnologia')
+            },
+            {
+              select: document.getElementById('modelo'),
+              input: document.getElementById('novoModelo')
+            }
+          ];
+
+          entries.forEach(function (entry) {
+            entry.select.addEventListener('change', function () {
+              var isNewEntry = entry.select.value === '__nova_entrada__';
+              entry.input.hidden = !isNewEntry;
+              entry.input.disabled = !isNewEntry;
+              entry.input.required = isNewEntry;
+              if (!isNewEntry) {
+                entry.input.value = '';
+              }
+            });
+          });
+
+          form.addEventListener('submit', function (event) {
+            entries.forEach(function (entry) {
+              if (entry.select.value !== '__nova_entrada__') {
+                return;
+              }
+
+              var customValue = entry.input.value.trim();
+              if (!customValue) {
+                event.preventDefault();
+                entry.input.focus();
+                return;
+              }
+
+              var option = document.createElement('option');
+              option.value = customValue;
+              option.textContent = customValue;
+              option.selected = true;
+              entry.select.appendChild(option);
+            });
+          });
+        }());

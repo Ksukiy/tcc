@@ -6,6 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('veiculos', {
     title: 'Veículos',
     veiculos: objetos.filtrarPorTipo('Veículo', req.query),
+    marcas: objetos.listarValores('Veículo', 'marca'),
+    modelos: objetos.listarValores('Veículo', 'modelo'),
     filtros: req.query
   });
 });

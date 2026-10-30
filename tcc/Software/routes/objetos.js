@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var objetos = require('../lib/objetos');
+var equipamentoOpcoes = require('../lib/equipamento-opcoes');
 var statusOpcoes = ['Locado', 'Disponível', 'Em Manutenção'];
 
 function obterUrlDeRetorno(url, tipo) {
@@ -57,6 +58,8 @@ router.get('/:id/editar', function(req, res) {
     title: 'Editar objeto',
     objeto: objeto,
     statusOpcoes: statusOpcoes,
+    tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
+    modeloOpcoes: equipamentoOpcoes.listar('modelo'),
     backUrl: obterUrlDeRetorno(req.query.voltar, objeto.tipo)
   });
 });
@@ -73,9 +76,29 @@ router.post('/:id/editar', function(req, res) {
       title: 'Editar objeto',
       objeto: Object.assign({}, objeto, req.body),
       statusOpcoes: statusOpcoes,
+      tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
+      modeloOpcoes: equipamentoOpcoes.listar('modelo'),
       backUrl: obterUrlDeRetorno(req.body.voltar, objeto.tipo),
       message: 'Selecione um status válido.'
     });
+  }
+
+  if (objeto.tipo === 'Equipamento' &&
+      (req.body.tecnologia === '__nova_entrada__' || req.body.modelo === '__nova_entrada__')) {
+    return res.status(400).render('editar', {
+      title: 'Editar objeto',
+      objeto: Object.assign({}, objeto, req.body),
+      statusOpcoes: statusOpcoes,
+      tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
+      modeloOpcoes: equipamentoOpcoes.listar('modelo'),
+      backUrl: obterUrlDeRetorno(req.body.voltar, objeto.tipo),
+      message: 'Informe a nova tecnologia ou modelo.'
+    });
+  }
+
+  if (objeto.tipo === 'Equipamento') {
+    equipamentoOpcoes.adicionar('tecnologia', req.body.tecnologia);
+    equipamentoOpcoes.adicionar('modelo', req.body.modelo);
   }
 
   objetos.atualizarObjeto(req.params.id, dadosDoFormulario(req.body, objeto));

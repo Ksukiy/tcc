@@ -25,6 +25,8 @@ html(lang="pt-BR")
           a.btn-add(href="/adicionar?tipo=Equipamento") Adicionar equipamento
 
       - var filtrosAtuais = filtros || {}
+      - var tecnologiasLista = tecnologias && tecnologias.length ? tecnologias : ['2G', '4G']
+      - var modelosLista = modelos && modelos.length ? modelos : ['RST - OBDII', 'RST - Mini LC', 'RST MINI - LC', 'RST Mini', 'RST LCv5', 'RST One', 'RST MÓVEL RF', 'RST ISCA GPS LORA', 'RST Plus', 'RST Híbrido', 'RST Micro', 'RST - Globalstar', 'NT40', 'NONOS-N4']
 
       form.list-filters(action='/equipamentos' method='get')
         .search-field
@@ -33,17 +35,22 @@ html(lang="pt-BR")
         button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-equipamentos') Filtrar
         .filter-panel#filtros-equipamentos(hidden)
           strong Opções de filtragem
+          label(for='tecnologia') Tecnologia
+          select#tecnologia(name='tecnologia')
+            option(value='') Todas
+            each tecnologia in tecnologiasLista
+              option(value=tecnologia selected=filtrosAtuais.tecnologia === tecnologia)= tecnologia
+          label(for='modelo') Modelo
+          select#modelo(name='modelo')
+            option(value='') Todos
+            each modelo in modelosLista
+              option(value=modelo selected=filtrosAtuais.modelo === modelo)= modelo
           label(for='status') Status
           select#status(name='status')
             option(value='') Todos
             option(value='Locado' selected=filtrosAtuais.status === 'Locado') Locado
             option(value='Disponível' selected=filtrosAtuais.status === 'Disponível') Disponível
             option(value='Em Manutenção' selected=filtrosAtuais.status === 'Em Manutenção') Em Manutenção
-          label(for='locado') Locação
-          select#locado(name='locado')
-            option(value='') Todos
-            option(value='true' selected=filtrosAtuais.locado === 'true') Locados
-            option(value='false' selected=filtrosAtuais.locado === 'false') Disponíveis
           .filter-actions
             button.btn(type='submit') Aplicar filtros
             a.clear-filters(href='/equipamentos') Limpar

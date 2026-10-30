@@ -20,6 +20,10 @@ function buscarPorId(id) {
 }
 
 function filtrarPorTipo(tipo, filtros) {
+  function normalizar(valor) {
+    return String(valor || '').trim().toLowerCase();
+  }
+
   var busca = String(filtros.busca || '').trim().toLowerCase();
   var objetos = listarPorTipo(tipo);
 
@@ -27,16 +31,31 @@ function filtrarPorTipo(tipo, filtros) {
     var correspondeBusca = !busca || Object.keys(objeto).some(function(chave) {
       return String(objeto[chave] || '').toLowerCase().indexOf(busca) >= 0;
     });
-    var correspondeStatus = !filtros.status || objeto.status === filtros.status;
+    var correspondeStatus = !filtros.status || normalizar(objeto.status) === normalizar(filtros.status);
     var correspondeLocacao = !filtros.locado || String(objeto.locado) === filtros.locado;
-    var correspondeTipoCliente = !filtros.tipoCliente || objeto.tipoCliente === filtros.tipoCliente;
-    var correspondeTipoAcessorio = !filtros.tipoAcessorio || objeto.tipoAcessorio === filtros.tipoAcessorio;
-    var correspondeMarca = !filtros.marca || objeto.marca === filtros.marca;
-    var correspondeAno = !filtros.ano || String(objeto.ano) === filtros.ano;
+    var correspondeTipoCliente = !filtros.tipoCliente || normalizar(objeto.tipoCliente) === normalizar(filtros.tipoCliente);
+    var correspondeTipoAcessorio = !filtros.tipoAcessorio || normalizar(objeto.tipoAcessorio) === normalizar(filtros.tipoAcessorio);
+    var correspondeMarca = !filtros.marca || normalizar(objeto.marca) === normalizar(filtros.marca);
+    var correspondeAno = !filtros.ano || String(objeto.ano).trim() === String(filtros.ano).trim();
+    var correspondeModelo = !filtros.modelo || normalizar(objeto.modelo) === normalizar(filtros.modelo);
+    var correspondeTecnologia = !filtros.tecnologia || normalizar(objeto.tecnologia) === normalizar(filtros.tecnologia);
 
     return correspondeBusca && correspondeStatus && correspondeLocacao &&
-      correspondeTipoCliente && correspondeTipoAcessorio && correspondeMarca && correspondeAno;
+      correspondeTipoCliente && correspondeTipoAcessorio && correspondeMarca && correspondeAno &&
+      correspondeModelo && correspondeTecnologia;
   });
+}
+
+function listarValores(tipo, campo) {
+  var valores = {};
+
+  listarPorTipo(tipo).forEach(function(objeto) {
+    if (objeto[campo]) {
+      valores[objeto[campo]] = true;
+    }
+  });
+
+  return Object.keys(valores).sort();
 }
 
 function adicionarObjeto(objeto) {
@@ -85,6 +104,7 @@ module.exports = {
   listarPorTipo: listarPorTipo,
   buscarPorId: buscarPorId,
   filtrarPorTipo: filtrarPorTipo,
+  listarValores: listarValores,
   adicionarObjeto: adicionarObjeto,
   atualizarObjeto: atualizarObjeto,
   removerObjeto: removerObjeto

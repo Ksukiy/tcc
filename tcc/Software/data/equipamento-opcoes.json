@@ -1,0 +1,38 @@
+{
+  "tecnologia": [
+    "2G",
+    "4G"
+  ],
+  "tipoAcessorio": [
+    "Bloqueador",
+    "Leitor",
+    "Chaveiro"
+  ],
+  "modelosAcessorio": {
+    "Bloqueador": [
+      "Relé de Bloqueio"
+    ],
+    "Leitor": [
+      "Ibutton"
+    ],
+    "Chaveiro": [
+      "Ibutton"
+    ]
+  },
+  "modelo": [
+    "RST - OBDII",
+    "RST - Mini LC",
+    "RST MINI - LC",
+    "RST Mini",
+    "RST LCv5",
+    "RST One",
+    "RST MÓVEL RF",
+    "RST ISCA GPS LORA",
+    "RST Plus",
+    "RST Híbrido",
+    "RST Micro",
+    "RST - Globalstar",
+    "NT40",
+    "NONOS-N4"
+  ]
+}

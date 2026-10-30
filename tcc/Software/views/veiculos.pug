@@ -25,6 +25,8 @@ html(lang="pt-BR")
           a.btn-add(href="/adicionar?tipo=Veículo") Adicionar veículo
 
       - var filtrosAtuais = filtros || {}
+      - var marcasLista = marcas && marcas.length ? marcas : []
+      - var modelosLista = modelos && modelos.length ? modelos : []
 
       form.list-filters(action='/veiculos' method='get')
         .search-field
@@ -33,6 +35,16 @@ html(lang="pt-BR")
         button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-veiculos') Filtrar
         .filter-panel#filtros-veiculos(hidden)
           strong Opções de filtragem
+          label(for='marca') Marca
+          select#marca(name='marca')
+            option(value='') Todas
+            each marca in marcasLista
+              option(value=marca selected=filtrosAtuais.marca === marca)= marca
+          label(for='modelo') Modelo
+          select#modelo(name='modelo')
+            option(value='') Todos
+            each modelo in modelosLista
+              option(value=modelo selected=filtrosAtuais.modelo === modelo)= modelo
           label(for='ano') Ano
           input#ano(type='number' name='ano' value=filtrosAtuais.ano placeholder='Ex.: 2024' min='1900' max='2100')
           .filter-actions

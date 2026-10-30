@@ -25,6 +25,8 @@ html(lang="pt-BR")
           a.btn-add(href="/adicionar?tipo=Acessório") Adicionar acessório
 
       - var filtrosAtuais = filtros || {}
+      - var tiposAcessorioLista = tiposAcessorio && tiposAcessorio.length ? tiposAcessorio : ['Bloqueador', 'Leitor', 'Chaveiro']
+      - var modelosLista = modelos && modelos.length ? modelos : ['Relé de Bloqueio', 'Ibutton']
 
       form.list-filters(action='/acessorios' method='get')
         .search-field
@@ -33,11 +35,16 @@ html(lang="pt-BR")
         button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-acessorios') Filtrar
         .filter-panel#filtros-acessorios(hidden)
           strong Opções de filtragem
-          label(for='locado') Locação
-          select#locado(name='locado')
+          label(for='tipoAcessorio') Tipo de acessório
+          select#tipoAcessorio(name='tipoAcessorio')
             option(value='') Todos
-            option(value='true' selected=filtrosAtuais.locado === 'true') Locados
-            option(value='false' selected=filtrosAtuais.locado === 'false') Disponíveis
+            each tipoAcessorio in tiposAcessorioLista
+              option(value=tipoAcessorio selected=filtrosAtuais.tipoAcessorio === tipoAcessorio)= tipoAcessorio
+          label(for='modelo') Modelo
+          select#modelo(name='modelo')
+            option(value='') Todos
+            each modelo in modelosLista
+              option(value=modelo selected=filtrosAtuais.modelo === modelo)= modelo
           label(for='status') Status
           select#status(name='status')
             option(value='') Todos
@@ -61,7 +68,7 @@ html(lang="pt-BR")
             if acessorios && acessorios.length > 0
               each item in acessorios
                 tr
-                  td= item.tipo || "Não informado"
+                  td= item.tipoAcessorio || "Não informado"
                   td= item.modelo || "Não informado"
                   td
                     - var classeStatus = item.status === 'Locado' ? 'status-located' : item.status === 'Disponível' ? 'status-available' : item.status === 'Em Manutenção' ? 'status-maintenance' : 'status-unknown'
