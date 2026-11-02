@@ -2,11 +2,39 @@
   {
     "id": 1,
     "tipo": "Equipamento",
-    "numeroSerie": "123123123",
-    "modelo": "RST - Globalstar",
+    "numeroSerie": "12345679",
+    "modelo": "RST - OBDII",
     "tecnologia": "2G",
     "anoAquisicao": "2000",
-    "status": "Locado",
-    "locado": true
+    "status": "Disponível",
+    "locado": false
+  },
+  {
+    "id": 2,
+    "tipo": "Equipamento",
+    "numeroSerie": "12345679",
+    "modelo": "RST ISCA GPS LORA",
+    "tecnologia": "2G",
+    "anoAquisicao": "2000",
+    "status": "Disponível",
+    "locado": false
+  },
+  {
+    "id": 3,
+    "tipo": "Veículo",
+    "marca": "chevrolet",
+    "modelo": "teste2",
+    "ano": "2000",
+    "placa": "test7",
+    "locado": false
+  },
+  {
+    "id": 4,
+    "tipo": "Veículo",
+    "marca": "chevrolet",
+    "modelo": "teste2",
+    "ano": "2000",
+    "placa": "test8",
+    "locado": false
   }
 ]

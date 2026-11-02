@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var objetos = require('../lib/objetos');
 var equipamentoOpcoes = require('../lib/equipamento-opcoes');
+var relacoes = require('../lib/relacoes');
 
 var tipos = ['Equipamento', 'Acessório', 'Veículo', 'Cliente'];
 var statusOpcoes = ['Locado', 'Disponível', 'Em Manutenção'];
@@ -18,6 +19,17 @@ function obterUrlDeRetorno(url, tipo) {
 }
 
 function renderFormulario(res, dados) {
+  var veiculos = objetos.listarPorTipo('Veículo').map(function(veiculo) {
+    return Object.assign({}, veiculo, {
+      relacao: relacoes.obterRelacaoDoVeiculo(veiculo.id)
+    });
+  });
+  var equipamentos = objetos.listarPorTipo('Equipamento').map(function(equipamento) {
+    return Object.assign({}, equipamento, {
+      relacao: relacoes.obterRelacaoDoEquipamento(equipamento.id)
+    });
+  });
+
   res.render('adicionar', Object.assign({
     title: 'Adicionar objeto',
     tipos: tipos,
@@ -28,7 +40,10 @@ function renderFormulario(res, dados) {
     modelosAcessorio: equipamentoOpcoes.listarModelosAcessorio(),
     tipoSelecionado: 'Equipamento',
     backUrl: '/inicio'
-  }, dados));
+  }, dados, {
+    veiculos: veiculos,
+    equipamentos: equipamentos
+  }));
 }
 
 router.get('/', function(req, res, next) {
@@ -96,7 +111,38 @@ router.post('/', function(req, res, next) {
     locado: req.body.status === 'Locado'
   };
 
-  objetos.adicionarObjeto(objeto);
+  var novoObjeto = objetos.adicionarObjeto(objeto);
+
+  if (tipo === 'Equipamento' && req.body.status === 'Locado' && req.body.veiculoId) {
+    var resultadoEquipamento = relacoes.vincular(novoObjeto.id, req.body.veiculoId, {
+      garantia: req.body.garantia,
+      dataInstalacao: req.body.dataInstalacao,
+      dataRetirada: req.body.dataRetirada
+    });
+    if (resultadoEquipamento.erro) {
+      objetos.removerObjeto(novoObjeto.id);
+      return renderFormulario(res.status(400), {
+        tipoSelecionado: tipo,
+        message: resultadoEquipamento.erro,
+        backUrl: obterUrlDeRetorno(req.body.voltar, tipo)
+      });
+    }
+  }
+  if (tipo === 'Veículo' && req.body.equipamentoId) {
+    var resultadoVeiculo = relacoes.vincular(req.body.equipamentoId, novoObjeto.id, {
+      garantia: req.body.garantia,
+      dataInstalacao: req.body.dataInstalacao,
+      dataRetirada: req.body.dataRetirada
+    });
+    if (resultadoVeiculo.erro) {
+      objetos.removerObjeto(novoObjeto.id);
+      return renderFormulario(res.status(400), {
+        tipoSelecionado: tipo,
+        message: resultadoVeiculo.erro,
+        backUrl: obterUrlDeRetorno(req.body.voltar, tipo)
+      });
+    }
+  }
 
   res.redirect(destinosPorTipo[tipo]);
 });

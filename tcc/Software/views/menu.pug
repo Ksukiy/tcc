@@ -19,6 +19,18 @@ aside.side-menu
     a(href="/login")
       span.nav-icon ↪
       | Sair
+    button#open-options-menu.options-menu-button(type="button")
+      span.nav-icon ⚙
+      | Gerenciar entradas
+
+dialog#options-dialog.options-dialog
+  .options-dialog__content
+    button.options-dialog__close(type="button" aria-label="Fechar") ×
+    p.side-menu__eyebrow CATÁLOGO
+    h2 Gerenciar entradas
+    p.options-dialog__hint Adicione, renomeie ou remova as entradas usadas nos cadastros.
+    #options-groups.options-dialog__columns
+    p#options-message.options-message(role="status" hidden)
 
 script.
   (function () {
@@ -31,4 +43,116 @@ script.
       menuToggle.checked = !menuToggle.checked;
       sideMenu.classList.toggle('is-dismissed', !menuToggle.checked);
     });
+
+    var dialog = document.getElementById('options-dialog');
+    var optionsButton = document.getElementById('open-options-menu');
+    var closeButton = dialog.querySelector('.options-dialog__close');
+    var message = document.getElementById('options-message');
+
+    function showMessage(text, isError) {
+      message.textContent = text;
+      message.classList.toggle('is-error', Boolean(isError));
+      message.hidden = false;
+    }
+
+    function renderOptions(data) {
+      var groups = document.getElementById('options-groups');
+      groups.innerHTML = '';
+      Object.keys(data).forEach(function (campo) {
+        var group = document.createElement('section');
+        var heading = document.createElement('h3');
+        var addForm = document.createElement('form');
+        var input = document.createElement('input');
+        var addButton = document.createElement('button');
+        var list = document.createElement('ul');
+        group.className = 'options-group';
+        group.dataset.campo = campo;
+        heading.textContent = campo.indexOf('modeloAcessorio:') === 0
+          ? 'Modelos - ' + campo.slice('modeloAcessorio:'.length)
+          : campo === 'tipoAcessorio' ? 'Tipos de acessórios' : campo === 'modelo' ? 'Modelos de equipamentos' : 'Tecnologias';
+        addForm.className = 'options-add-form';
+        input.type = 'text';
+        input.name = 'valor';
+        input.placeholder = 'Nova entrada';
+        input.required = true;
+        addButton.type = 'submit';
+        addButton.className = 'btn';
+        addButton.textContent = 'Adicionar';
+        list.className = 'options-list';
+        addForm.appendChild(input);
+        addForm.appendChild(addButton);
+        group.appendChild(heading);
+        group.appendChild(addForm);
+        group.appendChild(list);
+        groups.appendChild(group);
+        var list = group.querySelector('.options-list');
+        (data[campo] || []).forEach(function (valor) {
+          var item = document.createElement('li');
+          var label = document.createElement('span');
+          var edit = document.createElement('button');
+          var remove = document.createElement('button');
+          label.textContent = valor;
+          edit.type = 'button';
+          edit.textContent = 'Editar';
+          remove.type = 'button';
+          remove.textContent = 'Remover';
+          edit.addEventListener('click', function () {
+            var novo = window.prompt('Novo valor para "' + valor + '":', valor);
+            if (novo && novo.trim() !== valor) {
+              updateOption('editar', campo, valor, novo.trim());
+            }
+          });
+          remove.addEventListener('click', function () {
+            if (window.confirm('Remover "' + valor + '"?')) {
+              updateOption('remover', campo, valor, '');
+            }
+          });
+          item.appendChild(label);
+          item.appendChild(edit);
+          item.appendChild(remove);
+          list.appendChild(item);
+        });
+      });
+      groups.querySelectorAll('.options-add-form').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          var campo = form.closest('.options-group').dataset.campo;
+          var valor = form.elements.valor.value.trim();
+          if (valor) {
+            updateOption('adicionar', campo, '', valor);
+            form.reset();
+          }
+        });
+      });
+    }
+
+    function updateOption(operacao, campo, atual, valor) {
+      fetch('/opcoes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operacao: operacao, campo: campo, atual: atual, valor: valor })
+      }).then(function (response) {
+        return response.json().then(function (data) {
+          if (!response.ok) throw new Error(data.message || 'Não foi possível atualizar as opções.');
+          return data;
+        });
+      }).then(function (data) {
+        renderOptions(data);
+        showMessage('Opções atualizadas.');
+      }).catch(function (error) {
+        showMessage(error.message, true);
+      });
+    }
+
+    optionsButton.addEventListener('click', function () {
+      fetch('/opcoes').then(function (response) { return response.json(); }).then(function (data) {
+        renderOptions(data);
+        message.hidden = true;
+        dialog.showModal();
+      }).catch(function () {
+        showMessage('Não foi possível carregar as opções.', true);
+        dialog.showModal();
+      });
+    });
+    closeButton.addEventListener('click', function () { dialog.close(); });
   }());

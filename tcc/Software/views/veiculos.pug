@@ -59,6 +59,7 @@ html(lang="pt-BR")
               th Marca
               th Modelo
               th Ano
+              th Equipamento ligado
               th ID
               th Ações
           tbody
@@ -69,6 +70,11 @@ html(lang="pt-BR")
                   td= item.marca || "Não informado"
                   td= item.modelo || "Não informado"
                   td= item.ano || "Não informado"
+                  td
+                    if item.equipamentoRelacionado
+                      button.relation-trigger(type='button' data-relation-title='Equipamento ligado' data-relation=JSON.stringify(item.relacao || {}) aria-label='Mostrar detalhes da relação com o equipamento' title='Clique para ver os detalhes da relação') #{item.equipamentoRelacionado.numeroSerie || 'Sem número de série'} - #{item.equipamentoRelacionado.modelo || ''}
+                    else
+                      | Não ligado
                   td= item.id || "Não informado"
                   td.table-action
                     .action-buttons
@@ -77,6 +83,7 @@ html(lang="pt-BR")
                         button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="6") Nenhum veículo encontrado no estoque.
+                td.empty-state(colspan="7") Nenhum veículo encontrado no estoque.
 
       script(src='/javascripts/list-filters.js')
+      script(src='/javascripts/relation-tooltip.js')

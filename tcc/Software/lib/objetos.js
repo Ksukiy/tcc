@@ -13,6 +13,17 @@ function listarPorTipo(tipo) {
   });
 }
 
+function normalizarTipo(tipo) {
+  return String(tipo || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function contarPorTipo(tipo) {
+  var tipoNormalizado = normalizarTipo(tipo);
+  return lerObjetos().filter(function(objeto) {
+    return normalizarTipo(objeto.tipo) === tipoNormalizado;
+  }).length;
+}
+
 function buscarPorId(id) {
   return lerObjetos().find(function(objeto) {
     return String(objeto.id) === String(id);
@@ -102,6 +113,7 @@ function atualizarObjeto(id, dados) {
 
 module.exports = {
   listarPorTipo: listarPorTipo,
+  contarPorTipo: contarPorTipo,
   buscarPorId: buscarPorId,
   filtrarPorTipo: filtrarPorTipo,
   listarValores: listarValores,

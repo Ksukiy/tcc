@@ -37,6 +37,7 @@ app.use('/cadastro', cadastroRouter);
 app.use('/adicionar', adicionarRouter);
 app.use('/perfil', perfilRouter);
 app.use('/objetos', objetosRouter);
+app.use('/opcoes', require('./routes/opcoes'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

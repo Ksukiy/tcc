@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var objetos = require('../lib/objetos');
 
 /* Redirect root to login page. */
 router.get('/', function(req, res, next) {
@@ -10,7 +11,13 @@ router.get('/', function(req, res, next) {
 router.get('/inicio', function(req, res, next) {
   res.render('index', {
     title: 'Gerenciamento de Estoque',
-    usuario: req.query.usuario
+    usuario: req.query.usuario,
+    resumo: {
+      equipamentos: objetos.contarPorTipo('Equipamento'),
+      acessorios: objetos.contarPorTipo('Acessório'),
+      veiculos: objetos.contarPorTipo('Veículo'),
+      clientes: objetos.contarPorTipo('Cliente')
+    }
   });
 });
 

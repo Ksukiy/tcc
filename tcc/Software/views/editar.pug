@@ -7,6 +7,8 @@ block content
   - var tecnologiaAtualNaLista = tecnologiaLista.indexOf(objeto.tecnologia) >= 0
   - var modeloAtualNaLista = modeloLista.indexOf(objeto.modelo) >= 0
   - var paginaAnterior = backUrl || '/inicio'
+  - var veiculoAtual = objeto.veiculoId ? String(objeto.veiculoId) : ''
+  - var equipamentoAtual = objeto.equipamentoId ? String(objeto.equipamentoId) : ''
   a.page-back(href=paginaAnterior) Voltar
   .container
     nav.breadcrumbs(aria-label="Navegação estrutural")
@@ -35,6 +37,20 @@ block content
 
           label(for='placa') Placa
           input#placa(type='text' name='placa' value=objeto.placa placeholder='Digite a placa' required)
+
+          label(for='equipamentoId') Equipamento ligado
+          select#equipamentoId(name='equipamentoId')
+            option(value='' selected=!equipamentoAtual) Nenhum equipamento ligado
+            each equipamento in (equipamentos || [])
+              - var equipamentoTooltip = equipamento.relacao ? 'Garantia: ' + (equipamento.relacao.garantia || 'Não informada') + ' | Instalação: ' + (equipamento.relacao.dataInstalacao || 'Não informada') + ' | Retirada: ' + (equipamento.relacao.dataRetirada || 'Não informada') : 'Sem relação cadastrada'
+              option(value=equipamento.id selected=String(equipamento.id) === equipamentoAtual title=equipamentoTooltip data-tooltip=equipamentoTooltip data-garantia=equipamento.relacao && equipamento.relacao.garantia data-data-instalacao=equipamento.relacao && equipamento.relacao.dataInstalacao data-data-retirada=equipamento.relacao && equipamento.relacao.dataRetirada)= equipamento.numeroSerie || 'Sem número de série'
+          .relation-details(data-relation-details-for='equipamentoId' hidden)
+            label(for='garantiaVeiculo') Garantia
+            input#garantiaVeiculo(type='text' name='garantia' value=objeto.relacao && objeto.relacao.garantia placeholder='Ex.: 12 meses')
+            label(for='dataInstalacaoVeiculo') Data de instalação
+            input#dataInstalacaoVeiculo(type='date' name='dataInstalacao' value=objeto.relacao && objeto.relacao.dataInstalacao)
+            label(for='dataRetiradaVeiculo') Data de retirada
+            input#dataRetiradaVeiculo(type='date' name='dataRetirada' value=objeto.relacao && objeto.relacao.dataRetirada)
 
         if objeto.tipo === 'Equipamento'
           label(for='numeroSerie') Número de Série
@@ -67,6 +83,20 @@ block content
           select#status(name='status' required)
             each status in statusOpcoes
               option(value=status selected=status === objeto.status)= status
+
+          label(for='veiculoId') Veículo ligado
+          select#veiculoId(name='veiculoId')
+            option(value='') Nenhum veículo
+            each veiculo in (veiculos || [])
+              - var veiculoTooltip = veiculo.relacao ? 'Garantia: ' + (veiculo.relacao.garantia || 'Não informada') + ' | Instalação: ' + (veiculo.relacao.dataInstalacao || 'Não informada') + ' | Retirada: ' + (veiculo.relacao.dataRetirada || 'Não informada') : 'Sem relação cadastrada'
+              option(value=veiculo.id selected=String(veiculo.id) === veiculoAtual title=veiculoTooltip data-tooltip=veiculoTooltip data-garantia=veiculo.relacao && veiculo.relacao.garantia data-data-instalacao=veiculo.relacao && veiculo.relacao.dataInstalacao data-data-retirada=veiculo.relacao && veiculo.relacao.dataRetirada)= (veiculo.placa || 'Sem placa') + ' - ' + (veiculo.marca || '') + ' ' + (veiculo.modelo || '')
+          .relation-details(data-relation-details-for='veiculoId' hidden)
+            label(for='garantiaEquipamento') Garantia
+            input#garantiaEquipamento(type='text' name='garantia' value=objeto.relacao && objeto.relacao.garantia placeholder='Ex.: 12 meses')
+            label(for='dataInstalacaoEquipamento') Data de instalação
+            input#dataInstalacaoEquipamento(type='date' name='dataInstalacao' value=objeto.relacao && objeto.relacao.dataInstalacao)
+            label(for='dataRetiradaEquipamento') Data de retirada
+            input#dataRetiradaEquipamento(type='date' name='dataRetirada' value=objeto.relacao && objeto.relacao.dataRetirada)
 
         if objeto.tipo === 'Acessório'
           label(for='tipoAcessorio') Tipo
@@ -144,4 +174,48 @@ block content
               entry.select.appendChild(option);
             });
           });
+        }());
+    if objeto.tipo === 'Equipamento' || objeto.tipo === 'Veículo'
+      script.
+        (function () {
+          function configurarRelacao(select) {
+            if (!select) return;
+            var detalhes = document.querySelector('[data-relation-details-for="' + select.id + '"]');
+            if (!detalhes) return;
+            var campos = detalhes.querySelectorAll('input');
+            function atualizar() {
+              var option = select.options[select.selectedIndex];
+              var ligado = Boolean(select.value);
+              detalhes.hidden = !ligado;
+              campos.forEach(function (campo) {
+                campo.disabled = !ligado;
+              });
+              if (option && option.dataset.garantia !== undefined) {
+                campos[0].value = option.dataset.garantia || '';
+                campos[1].value = option.dataset.dataInstalacao || '';
+                campos[2].value = option.dataset.dataRetirada || '';
+              }
+            }
+            select.addEventListener('change', atualizar);
+            atualizar();
+            var tooltip = document.createElement('span');
+            tooltip.className = 'relation-tooltip';
+            tooltip.hidden = true;
+            document.body.appendChild(tooltip);
+            function mostrarTooltip(event) {
+              var option = event.target.tagName === 'OPTION' ? event.target : select.options[select.selectedIndex];
+              if (!option || !option.dataset.tooltip || !select.value) return;
+              tooltip.textContent = option.dataset.tooltip;
+              var rect = select.getBoundingClientRect();
+              tooltip.style.left = rect.left + 'px';
+              tooltip.style.top = (rect.bottom + 8) + 'px';
+              tooltip.hidden = false;
+            }
+            select.addEventListener('mouseover', mostrarTooltip);
+            select.addEventListener('focus', mostrarTooltip);
+            select.addEventListener('mouseleave', function () { tooltip.hidden = true; });
+            select.addEventListener('blur', function () { tooltip.hidden = true; });
+          }
+          configurarRelacao(document.getElementById('equipamentoId'));
+          configurarRelacao(document.getElementById('veiculoId'));
         }());

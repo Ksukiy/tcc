@@ -39,6 +39,7 @@ html(lang="pt-BR")
             span.card-arrow ↗
 
       section.home-dashboard(aria-labelledby="dashboard-title")
+        - var resumoAtual = resumo || {}
         .dashboard-heading
           .dashboard-heading__copy
             p.dashboard-kicker RESUMO DO SISTEMA
@@ -48,28 +49,20 @@ html(lang="pt-BR")
         .dashboard-stats
           .dashboard-stat
             span.dashboard-stat__icon ◈
-            strong 04
-            span Módulos disponíveis
+            strong= resumoAtual.equipamentos || 0
+            span Equipamentos cadastrados
           .dashboard-stat
-            span.dashboard-stat__icon +
-            strong Novo
-            span Cadastro de itens
+            span.dashboard-stat__icon ◈
+            strong= resumoAtual.acessorios || 0
+            span Acessórios cadastrados
           .dashboard-stat
-            span.dashboard-stat__icon ↗
-            strong Direto
-            span Acesso às listagens
-          .dashboard-stat.dashboard-stat--accent
-            span.dashboard-stat__icon ✓
-            strong Ativo
-            span Painel operacional
+            span.dashboard-stat__icon ◈
+            strong= resumoAtual.veiculos || 0
+            span Veículos cadastrados
+          .dashboard-stat
+            span.dashboard-stat__icon ◈
+            strong= resumoAtual.clientes || 0
+            span Clientes cadastrados
 
         .dashboard-links
-          a(href="/adicionar?tipo=Equipamento")
-            span.dashboard-link__label Adicionar equipamento
-            span.dashboard-link__arrow ↗
-          a(href="/adicionar?tipo=Acessório")
-            span.dashboard-link__label Adicionar acessório
-            span.dashboard-link__arrow ↗
-          a(href="/adicionar?tipo=Veículo")
-            span.dashboard-link__label Adicionar veículo
-            span.dashboard-link__arrow ↗
+          a.dashboard-add-button(href="/adicionar") Adicionar

@@ -48,6 +48,34 @@ function adicionar(campo, valor) {
     opcoes[campo].push(entrada);
     fs.writeFileSync(arquivo, JSON.stringify(opcoes, null, 2) + '\n');
   }
+
+}
+
+function editar(campo, atual, novoValor) {
+  var opcoes = lerOpcoes();
+  var novo = String(novoValor || '').trim();
+  var indice = opcoes[campo] && opcoes[campo].indexOf(atual);
+
+  if (!novo || !opcoes[campo] || indice < 0 || (opcoes[campo].indexOf(novo) >= 0 && novo !== atual)) {
+    return false;
+  }
+
+  opcoes[campo][indice] = novo;
+  fs.writeFileSync(arquivo, JSON.stringify(opcoes, null, 2) + '\n');
+  return true;
+}
+
+function remover(campo, valor) {
+  var opcoes = lerOpcoes();
+  var indice = opcoes[campo] && opcoes[campo].indexOf(valor);
+
+  if (!opcoes[campo] || indice < 0) {
+    return false;
+  }
+
+  opcoes[campo].splice(indice, 1);
+  fs.writeFileSync(arquivo, JSON.stringify(opcoes, null, 2) + '\n');
+  return true;
 }
 
 function listarModelosAcessorio() {
@@ -72,10 +100,56 @@ function adicionarModeloAcessorio(tipo, valor) {
   }
 }
 
+function listarTodas() {
+  var opcoes = lerOpcoes();
+  var todas = {
+    tecnologia: opcoes.tecnologia || [],
+    modelo: opcoes.modelo || [],
+    tipoAcessorio: opcoes.tipoAcessorio || []
+  };
+
+  Object.keys(opcoes.modelosAcessorio || {}).forEach(function (tipo) {
+    todas['modeloAcessorio:' + tipo] = opcoes.modelosAcessorio[tipo];
+  });
+  return todas;
+}
+
+function editarModeloAcessorio(tipo, atual, novoValor) {
+  var opcoes = lerOpcoes();
+  var lista = opcoes.modelosAcessorio && opcoes.modelosAcessorio[tipo];
+  var novo = String(novoValor || '').trim();
+  var indice = lista && lista.indexOf(atual);
+
+  if (!novo || !lista || indice < 0 || (lista.indexOf(novo) >= 0 && novo !== atual)) {
+    return false;
+  }
+  lista[indice] = novo;
+  fs.writeFileSync(arquivo, JSON.stringify(opcoes, null, 2) + '\n');
+  return true;
+}
+
+function removerModeloAcessorio(tipo, valor) {
+  var opcoes = lerOpcoes();
+  var lista = opcoes.modelosAcessorio && opcoes.modelosAcessorio[tipo];
+  var indice = lista && lista.indexOf(valor);
+
+  if (!lista || indice < 0) {
+    return false;
+  }
+  lista.splice(indice, 1);
+  fs.writeFileSync(arquivo, JSON.stringify(opcoes, null, 2) + '\n');
+  return true;
+}
+
 module.exports = {
   opcoesPadrao: opcoesPadrao,
   listar: listar,
   adicionar: adicionar,
+  editar: editar,
+  remover: remover,
   listarModelosAcessorio: listarModelosAcessorio,
   adicionarModeloAcessorio: adicionarModeloAcessorio
+  , listarTodas: listarTodas
+  , editarModeloAcessorio: editarModeloAcessorio
+  , removerModeloAcessorio: removerModeloAcessorio
 };

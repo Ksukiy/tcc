@@ -1,0 +1,9 @@
+[
+  {
+    "equipamentoId": 1,
+    "veiculoId": 3,
+    "dataInstalacao": "2001-12-12",
+    "garantia": "12 Meses",
+    "dataRetirada": "2003-12-12"
+  }
+]
