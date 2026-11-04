@@ -1,41 +1,37 @@
-var fs = require('fs');
-var path = require('path');
+var database = require('./database');
 var objetos = require('./objetos');
 
-var arquivo = path.join(__dirname, '..', 'data', 'relacoes.json');
+function rowToRelation(row) {
+  return {
+    equipamentoId: Number(row[0]),
+    veiculoId: Number(row[1]),
+    garantia: row[2],
+    dataInstalacao: row[3],
+    dataRetirada: row[4]
+  };
+}
 
 function lerRelacoes() {
-  return JSON.parse(fs.readFileSync(arquivo, 'utf8'));
+  return database.query('SELECT equipamento_id, veiculo_id, garantia, data_instalacao, data_retirada FROM equipamentos_veiculos').map(rowToRelation);
 }
 
-function salvarRelacoes(relacoes) {
-  fs.writeFileSync(arquivo, JSON.stringify(relacoes, null, 2) + '\n');
+function obterRelacaoPorCampo(campo, id) {
+  var rows = database.query('SELECT equipamento_id, veiculo_id, garantia, data_instalacao, data_retirada FROM equipamentos_veiculos WHERE ' +
+    campo + '=' + Number(id));
+  return rows.length ? rowToRelation(rows[0]) : null;
 }
 
-function buscarRelacaoPorEquipamento(equipamentoId) {
-  return lerRelacoes().find(function(relacao) {
-    return String(relacao.equipamentoId) === String(equipamentoId);
-  });
+function obterRelacaoDoEquipamento(id) {
+  return obterRelacaoPorCampo('equipamento_id', id);
 }
 
-function buscarRelacaoPorVeiculo(veiculoId) {
-  return lerRelacoes().find(function(relacao) {
-    return String(relacao.veiculoId) === String(veiculoId);
-  });
-}
-
-function obterRelacaoDoEquipamento(equipamentoId) {
-  return buscarRelacaoPorEquipamento(equipamentoId) || null;
-}
-
-function obterRelacaoDoVeiculo(veiculoId) {
-  return buscarRelacaoPorVeiculo(veiculoId) || null;
+function obterRelacaoDoVeiculo(id) {
+  return obterRelacaoPorCampo('veiculo_id', id);
 }
 
 function validarObjetos(equipamentoId, veiculoId) {
   var equipamento = objetos.buscarPorId(equipamentoId);
   var veiculo = objetos.buscarPorId(veiculoId);
-
   if (!equipamento || equipamento.tipo !== 'Equipamento') {
     return 'Equipamento não encontrado.';
   }
@@ -50,65 +46,51 @@ function vincular(equipamentoId, veiculoId, dados) {
   if (erro) {
     return { erro: erro };
   }
-
-  var relacoes = lerRelacoes();
-  var relacaoDoEquipamento = buscarRelacaoPorEquipamento(equipamentoId);
-  var relacaoDoVeiculo = buscarRelacaoPorVeiculo(veiculoId);
-
-  if (relacaoDoEquipamento && String(relacaoDoEquipamento.veiculoId) !== String(veiculoId)) {
+  var atual = obterRelacaoDoEquipamento(equipamentoId);
+  var veiculoAtual = obterRelacaoDoVeiculo(veiculoId);
+  if (atual && String(atual.veiculoId) !== String(veiculoId)) {
     return { erro: 'Este equipamento já está ligado a outro veículo.' };
   }
-  if (relacaoDoVeiculo && String(relacaoDoVeiculo.equipamentoId) !== String(equipamentoId)) {
+  if (veiculoAtual && String(veiculoAtual.equipamentoId) !== String(equipamentoId)) {
     return { erro: 'Este veículo já possui outro equipamento ligado.' };
   }
-  var dadosRelacao = dados || {};
-  var relacao = relacaoDoEquipamento || {
-      equipamentoId: Number(equipamentoId),
-      veiculoId: Number(veiculoId),
-      dataInstalacao: new Date().toISOString().slice(0, 10)
-    };
-  if (dadosRelacao.garantia !== undefined) {
-    relacao.garantia = dadosRelacao.garantia;
-  }
-  if (dadosRelacao.dataInstalacao) {
-    relacao.dataInstalacao = dadosRelacao.dataInstalacao;
-  }
-  if (dadosRelacao.dataRetirada) {
-    relacao.dataRetirada = dadosRelacao.dataRetirada;
-  } else if (dadosRelacao.dataRetirada === '') {
-    relacao.dataRetirada = null;
-  }
-  if (!relacaoDoEquipamento) {
-    relacoes.push(relacao);
-  } else {
-    relacoes[relacoes.indexOf(relacaoDoEquipamento)] = relacao;
-  }
-  salvarRelacoes(relacoes);
-
-  return { relacao: relacao };
+  dados = dados || {};
+  database.run('INSERT INTO equipamentos_veiculos (equipamento_id, veiculo_id, garantia, data_instalacao, data_retirada) VALUES (' +
+    Number(equipamentoId) + ', ' + Number(veiculoId) + ', ' + database.sqlValue(dados.garantia) + ', ' +
+    database.sqlValue(dados.dataInstalacao || new Date().toISOString().slice(0, 10)) + ', ' + database.sqlValue(dados.dataRetirada) +
+    ') ON DUPLICATE KEY UPDATE veiculo_id=VALUES(veiculo_id), garantia=VALUES(garantia), data_instalacao=VALUES(data_instalacao), data_retirada=VALUES(data_retirada)');
+  return { relacao: obterRelacaoDoEquipamento(equipamentoId) };
 }
 
 function desvincularPorObjeto(id) {
-  var relacoes = lerRelacoes();
-  var restantes = relacoes.filter(function(relacao) {
-    return String(relacao.equipamentoId) !== String(id) &&
-      String(relacao.veiculoId) !== String(id);
-  });
-
-  if (restantes.length !== relacoes.length) {
-    salvarRelacoes(restantes);
-  }
+  database.run('DELETE FROM equipamentos_veiculos WHERE equipamento_id=' + Number(id) + ' OR veiculo_id=' + Number(id));
 }
 
-function obterVeiculoDoEquipamento(equipamentoId) {
-  var relacao = buscarRelacaoPorEquipamento(equipamentoId);
+function obterVeiculoDoEquipamento(id) {
+  var relacao = obterRelacaoDoEquipamento(id);
   return relacao ? objetos.buscarPorId(relacao.veiculoId) : null;
 }
 
-function obterEquipamentoDoVeiculo(veiculoId) {
-  var relacao = buscarRelacaoPorVeiculo(veiculoId);
+function obterEquipamentoDoVeiculo(id) {
+  var relacao = obterRelacaoDoVeiculo(id);
   return relacao ? objetos.buscarPorId(relacao.equipamentoId) : null;
 }
+
+function migrarJson() {
+  if (lerRelacoes().length > 0) {
+    return;
+  }
+  var fs = require('fs');
+  var path = require('path');
+  var arquivo = path.join(__dirname, '..', 'data', 'relacoes.json');
+  JSON.parse(fs.readFileSync(arquivo, 'utf8')).forEach(function(relacao) {
+    if (validarObjetos(relacao.equipamentoId, relacao.veiculoId) === null) {
+      vincular(relacao.equipamentoId, relacao.veiculoId, relacao);
+    }
+  });
+}
+
+migrarJson();
 
 module.exports = {
   lerRelacoes: lerRelacoes,

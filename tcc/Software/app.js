@@ -25,6 +25,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(function(req, res, next) {
+  res.locals.usuario = req.cookies.usuario_email || req.query.usuario;
+  res.locals.nome = req.cookies.usuario_nome || req.query.nome;
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

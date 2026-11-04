@@ -36,5 +36,15 @@
     "ano": "2000",
     "placa": "test8",
     "locado": false
+  },
+  {
+    "id": 5,
+    "tipo": "Equipamento",
+    "numeroSerie": "5642321545",
+    "modelo": "RST - Mini LC",
+    "tecnologia": "2G",
+    "anoAquisicao": "2020",
+    "status": "Disponível",
+    "locado": false
   }
 ]

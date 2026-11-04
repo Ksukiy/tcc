@@ -22,6 +22,9 @@ block content
       .profile-content
 
         form.login-form.profile-form(action='/perfil' method='post')
+          label(for='nome') Nome
+          input#nome(type='text' name='nome' value=nome placeholder='Seu nome completo' required)
+
           label(for='email') E-mail
           input#email(type='email' name='email' value=email placeholder='exemplo@exemplo.com' required)
 

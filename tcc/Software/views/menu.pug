@@ -8,12 +8,12 @@ aside.side-menu
   .side-menu__top
     p.side-menu__eyebrow PAINEL
   .user-card
-    .user-avatar= (usuario || 'U').charAt(0).toUpperCase()
+    .user-avatar= (nome || usuario || 'U').charAt(0).toUpperCase()
     .user-card__copy
       span Usuário conectado
-      strong= usuario || 'Visitante'
+      strong= nome || usuario || 'Visitante'
   nav.side-nav(aria-label="Menu do usuário")
-    a(href=usuario ? '/perfil?usuario=' + encodeURIComponent(usuario) : '/perfil')
+    a(href=usuario ? '/perfil?usuario=' + encodeURIComponent(usuario) + (nome ? '&nome=' + encodeURIComponent(nome) : '') : '/perfil')
       span.nav-icon ✎
       | Editar dados
     a(href="/login")

@@ -11,7 +11,8 @@ router.get('/', function(req, res, next) {
 router.get('/inicio', function(req, res, next) {
   res.render('index', {
     title: 'Gerenciamento de Estoque',
-    usuario: req.query.usuario,
+    usuario: res.locals.usuario,
+    nome: res.locals.nome,
     resumo: {
       equipamentos: objetos.contarPorTipo('Equipamento'),
       acessorios: objetos.contarPorTipo('Acessório'),

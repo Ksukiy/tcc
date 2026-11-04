@@ -21,13 +21,13 @@ USE tcc_estoque;
 -- ============================================================
 -- Atende cadastro, login e edição de perfil.
 -- email pode ser preenchido posteriormente pelo perfil porque o
--- formulário de cadastro atual solicita nome, senha e nascimento.
+-- formulário de cadastro solicita nome, e-mail e senha.
 CREATE TABLE IF NOT EXISTS usuarios (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   nome VARCHAR(80) NOT NULL,
   email VARCHAR(100) NULL,
   senha_hash VARCHAR(255) NOT NULL,
-  data_nascimento DATE NOT NULL,
+  data_nascimento DATE NULL,
   ativo TINYINT(1) NOT NULL DEFAULT 1,
   ultimo_login DATETIME NULL,
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -266,10 +266,10 @@ CREATE TABLE IF NOT EXISTS locacoes (
   KEY idx_locacoes_cliente (cliente_id),
   CONSTRAINT fk_locacoes_equipamento
     FOREIGN KEY (equipamento_id) REFERENCES equipamentos (id)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
+    ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT fk_locacoes_acessorio
     FOREIGN KEY (acessorio_id) REFERENCES acessorios (id)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
+    ON UPDATE RESTRICT ON DELETE RESTRICT,
   CONSTRAINT fk_locacoes_cliente
     FOREIGN KEY (cliente_id) REFERENCES clientes (id)
     ON UPDATE CASCADE ON DELETE RESTRICT,

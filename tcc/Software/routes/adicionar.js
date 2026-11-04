@@ -111,7 +111,16 @@ router.post('/', function(req, res, next) {
     locado: req.body.status === 'Locado'
   };
 
-  var novoObjeto = objetos.adicionarObjeto(objeto);
+  var novoObjeto;
+  try {
+    novoObjeto = objetos.adicionarObjeto(objeto);
+  } catch (erro) {
+    return renderFormulario(res.status(400), {
+      tipoSelecionado: tipo,
+      message: 'Não foi possível salvar o objeto. Verifique os dados informados.',
+      backUrl: obterUrlDeRetorno(req.body.voltar, tipo)
+    });
+  }
 
   if (tipo === 'Equipamento' && req.body.status === 'Locado' && req.body.veiculoId) {
     var resultadoEquipamento = relacoes.vincular(novoObjeto.id, req.body.veiculoId, {
