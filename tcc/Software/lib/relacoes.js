@@ -55,10 +55,13 @@ function vincular(equipamentoId, veiculoId, dados) {
     return { erro: 'Este veículo já possui outro equipamento ligado.' };
   }
   dados = dados || {};
+  var dataInstalacao = dados.dataInstalacao || new Date().toISOString().slice(0, 10);
+  var dataRetirada = dados.dataRetirada || null;
   database.run('INSERT INTO equipamentos_veiculos (equipamento_id, veiculo_id, garantia, data_instalacao, data_retirada) VALUES (' +
     Number(equipamentoId) + ', ' + Number(veiculoId) + ', ' + database.sqlValue(dados.garantia) + ', ' +
-    database.sqlValue(dados.dataInstalacao || new Date().toISOString().slice(0, 10)) + ', ' + database.sqlValue(dados.dataRetirada) +
+    database.sqlValue(dataInstalacao) + ', ' + database.sqlValue(dataRetirada) +
     ') ON DUPLICATE KEY UPDATE veiculo_id=VALUES(veiculo_id), garantia=VALUES(garantia), data_instalacao=VALUES(data_instalacao), data_retirada=VALUES(data_retirada)');
+  objetos.atualizarObjeto(equipamentoId, { status: 'Locado' });
   return { relacao: obterRelacaoDoEquipamento(equipamentoId) };
 }
 

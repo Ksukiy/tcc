@@ -8,32 +8,32 @@ html(lang="pt-BR")
 
   body
     include menu.pug
-    a.page-back(href="/inicio") Voltar
-    .container
-      .page-meta
-        nav.breadcrumbs(aria-label="Navegação estrutural")
+    a.voltar-pagina(href="/inicio") Voltar
+    .conteiner
+      .metadados-pagina
+        nav.migalhas-navegacao(aria-label="Navegação estrutural")
           a(href="/inicio") Início
           span(aria-hidden="true") /
           span Veículos
-        nav.list-navigation(aria-label="Outras áreas")
+        nav.navegacao-listas(aria-label="Outras áreas")
           a(href='/equipamentos') Equipamentos
           a(href='/acessorios') Acessórios
           a(href='/clientes') Clientes
-      header.header
+      header.cabecalho
         h1 Lista de Veículos
-        .header-actions
-          a.btn-add(href="/adicionar?tipo=Veículo") Adicionar veículo
+        .acoes-cabecalho
+          a.botao-adicionar(href="/adicionar?tipo=Veículo") Adicionar veículo
 
       - var filtrosAtuais = filtros || {}
       - var marcasLista = marcas && marcas.length ? marcas : []
       - var modelosLista = modelos && modelos.length ? modelos : []
 
-      form.list-filters(action='/veiculos' method='get')
-        .search-field
+      form.filtros-lista(action='/veiculos' method='get')
+        .campo-busca
           label(for='busca') Buscar
           input#busca(type='search' name='busca' value=filtrosAtuais.busca placeholder='Marca, modelo ou placa')
-        button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-veiculos') Filtrar
-        .filter-panel#filtros-veiculos(hidden)
+        button.alternador-filtros(type='button' aria-expanded='false' aria-controls='filtros-veiculos') Filtrar
+        .painel-filtros#filtros-veiculos(hidden)
           strong Opções de filtragem
           label(for='marca') Marca
           select#marca(name='marca')
@@ -47,11 +47,11 @@ html(lang="pt-BR")
               option(value=modelo selected=filtrosAtuais.modelo === modelo)= modelo
           label(for='ano') Ano
           input#ano(type='number' name='ano' value=filtrosAtuais.ano placeholder='Ex.: 2024' min='1900' max='2100')
-          .filter-actions
-            button.btn(type='submit') Aplicar filtros
-            a.clear-filters(href='/veiculos') Limpar
+          .acoes-filtros
+            button.botao(type='submit') Aplicar filtros
+            a.limpar-filtros(href='/veiculos') Limpar
 
-      main.table-container
+      main.conteiner-tabela
         table
           thead
             tr
@@ -72,18 +72,18 @@ html(lang="pt-BR")
                   td= item.ano || "Não informado"
                   td
                     if item.equipamentoRelacionado
-                      button.relation-trigger(type='button' data-relation-title='Equipamento ligado' data-relation=JSON.stringify(item.relacao || {}) aria-label='Mostrar detalhes da relação com o equipamento' title='Clique para ver os detalhes da relação') #{item.equipamentoRelacionado.numeroSerie || 'Sem número de série'} - #{item.equipamentoRelacionado.modelo || ''}
+                      button.gatilho-relacao(type='button' data-titulo-relacao='Equipamento ligado' data-relacao=JSON.stringify(item.relacao || {}) aria-label='Mostrar detalhes da relação com o equipamento' title='Clique para ver os detalhes da relação') #{item.equipamentoRelacionado.numeroSerie || 'Sem número de série'} - #{item.equipamentoRelacionado.modelo || ''}
                     else
                       | Não ligado
                   td= item.id || "Não informado"
-                  td.table-action
-                    .action-buttons
-                      a.btn-edit(href='/objetos/' + item.id + '/editar?voltar=/veiculos' aria-label='Editar objeto' title='Editar objeto') &#9998;
-                      form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
-                        button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
+                  td.acao-tabela
+                    .botoes-acao
+                      a.botao-editar(href='/objetos/' + item.id + '/editar?voltar=/veiculos' aria-label='Editar objeto' title='Editar objeto') &#9998;
+                      form.formulario-remocao(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                        button.botao-remover(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="7") Nenhum veículo encontrado no estoque.
+                td.estado-vazio(colspan="7") Nenhum veículo encontrado no estoque.
 
       script(src='/javascripts/list-filters.js')
       script(src='/javascripts/relation-tooltip.js')

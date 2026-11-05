@@ -10,26 +10,26 @@ block content
   - var modelosAcessorioJson = JSON.stringify(modelosAcessorio || { Bloqueador: ['Relé de Bloqueio'], Leitor: ['Ibutton'], Chaveiro: ['Ibutton'] })
   - var paginaAnterior = backUrl || (tipoSelecionado === 'Equipamento' ? '/equipamentos' : tipoSelecionado === 'Acessório' ? '/acessorios' : tipoSelecionado === 'Veículo' ? '/veiculos' : tipoSelecionado === 'Cliente' ? '/clientes' : '/inicio')
   - if (paginaAnterior === '/inicio' && tipoSelecionado === 'Equipamento') paginaAnterior = '/equipamentos'
-  a.page-back.add-object-back(href=paginaAnterior) Voltar
-  .container.add-object-page
-    nav.breadcrumbs(aria-label="Navegação estrutural")
+  a.voltar-pagina.voltar-adicionar-objeto(href=paginaAnterior) Voltar
+  .conteiner.pagina-adicionar-objeto
+    nav.migalhas-navegacao(aria-label="Navegação estrutural")
       a(href="/inicio") Início
       span(aria-hidden="true") /
       span Adicionar objeto
-    header.header
+    header.cabecalho
       h1 Adicionar objeto
 
-    main.form-container
+    main.conteiner-formulario
       if message
-        p.error= message
-      form.object-form(action='/adicionar' method='post')
+        p.erro= message
+      form.formulario-objeto(action='/adicionar' method='post')
         input(type='hidden' name='voltar' value=paginaAnterior)
         label(for='tipo') Tipo de objeto
         select#tipo(name='tipo' required)
           each tipo in tipos
             option(value=tipo selected=tipo === tipoSelecionado)= tipo
 
-        .object-fields(data-tipo='Veículo')
+        .campos-objeto(data-tipo='Veículo')
           label(for='marca') Marca
           select#marca(name='marca' required)
             option(value='') Selecione a marca
@@ -53,7 +53,7 @@ block content
             each equipamento in (equipamentos || [])
               - var equipamentoTooltip = equipamento.relacao ? 'Garantia: ' + (equipamento.relacao.garantia || 'Não informada') + ' | Instalação: ' + (equipamento.relacao.dataInstalacao || 'Não informada') + ' | Retirada: ' + (equipamento.relacao.dataRetirada || 'Não informada') : 'Sem relação cadastrada'
               option(value=equipamento.id title=equipamentoTooltip data-tooltip=equipamentoTooltip data-garantia=equipamento.relacao && equipamento.relacao.garantia data-data-instalacao=equipamento.relacao && equipamento.relacao.dataInstalacao data-data-retirada=equipamento.relacao && equipamento.relacao.dataRetirada)= equipamento.numeroSerie || 'Sem número de série'
-          .relation-details(data-relation-details-for='equipamentoId' hidden)
+          .detalhes-relacao(data-relacao-details-for='equipamentoId' hidden)
             label(for='garantiaVeiculo') Garantia
             input#garantiaVeiculo(type='text' name='garantia' placeholder='Ex.: 12 meses')
             label(for='dataInstalacaoVeiculo') Data de instalação
@@ -63,7 +63,7 @@ block content
 
         - var statusLista = statusOpcoes || ['Locado', 'Disponível', 'Em Manutenção']
 
-        .object-fields(data-tipo='Equipamento')
+        .campos-objeto(data-tipo='Equipamento')
           label(for='numeroSerie') Número de Série
           input#numeroSerie(type='text' name='numeroSerie' placeholder='Digite o número de série')
 
@@ -92,14 +92,14 @@ block content
             each status in statusLista
               option(value=status)= status
 
-          .vehicle-relation-fields(hidden)
+          .campos-relacao-veiculo(hidden)
             label(for='veiculoId') Veículo ligado
             select#veiculoId(name='veiculoId')
               option(value='') Nenhum veículo
               each veiculo in (veiculos || [])
                 - var veiculoTooltip = veiculo.relacao ? 'Garantia: ' + (veiculo.relacao.garantia || 'Não informada') + ' | Instalação: ' + (veiculo.relacao.dataInstalacao || 'Não informada') + ' | Retirada: ' + (veiculo.relacao.dataRetirada || 'Não informada') : 'Sem relação cadastrada'
                 option(value=veiculo.id title=veiculoTooltip data-tooltip=veiculoTooltip data-garantia=veiculo.relacao && veiculo.relacao.garantia data-data-instalacao=veiculo.relacao && veiculo.relacao.dataInstalacao data-data-retirada=veiculo.relacao && veiculo.relacao.dataRetirada)= (veiculo.placa || 'Sem placa') + ' - ' + (veiculo.marca || '') + ' ' + (veiculo.modelo || '')
-            .relation-details(data-relation-details-for='veiculoId' hidden)
+            .detalhes-relacao(data-relacao-details-for='veiculoId' hidden)
               label(for='garantiaEquipamento') Garantia
               input#garantiaEquipamento(type='text' name='garantia' placeholder='Ex.: 12 meses')
               label(for='dataInstalacaoEquipamento') Data de instalação
@@ -107,7 +107,7 @@ block content
               label(for='dataRetiradaEquipamento') Data de retirada
               input#dataRetiradaEquipamento(type='date' name='dataRetirada')
 
-        .object-fields(data-tipo='Acessório')
+        .campos-objeto(data-tipo='Acessório')
           label(for='tipoAcessorio') Tipo
           select#tipoAcessorio(name='tipoAcessorio' required)
             option(value='') Selecione o tipo
@@ -116,7 +116,7 @@ block content
             option(value='__nova_entrada__') Adicionar nova entrada
           input#novoTipoAcessorio(type='text' placeholder='Digite o novo tipo' hidden)
 
-          .accessory-model-fields(hidden)
+          .campos-modelo-acessorio(hidden)
             label(for='modeloAcessorio') Modelo
             select#modeloAcessorio(name='modelo' required)
               option(value='') Selecione o modelo
@@ -129,7 +129,7 @@ block content
             each status in statusLista
               option(value=status)= status
 
-        .object-fields(data-tipo='Cliente')
+        .campos-objeto(data-tipo='Cliente')
           label(for='nome') Nome
           input#nome(type='text' name='nome' placeholder='Digite o nome')
 
@@ -147,19 +147,19 @@ block content
           label(for='cpfCnpj') CPF/CNPJ
           input#cpfCnpj(type='text' name='cpfCnpj' placeholder='Digite o CPF ou CNPJ')
 
-        .form-actions
-          button.btn(type='submit') Adicionar objeto
-          a.cancel(href=paginaAnterior) Cancelar
+        .acoes-formulario
+          button.botao(type='submit') Adicionar objeto
+          a.cancelar(href=paginaAnterior) Cancelar
 
     script.
       (function () {
         var tipoSelect = document.getElementById('tipo');
-        var fieldGroups = document.querySelectorAll('.object-fields');
+        var fieldGroups = document.querySelectorAll('.campos-objeto');
         var equipamentoGroup = document.querySelector('[data-tipo="Equipamento"]');
         var acessorioGroup = document.querySelector('[data-tipo="Acessório"]');
-        var equipamentoForm = document.querySelector('.object-form');
+        var equipamentoForm = document.querySelector('.formulario-objeto');
         var tipoAcessorioSelect = acessorioGroup.querySelector('#tipoAcessorio');
-        var modeloAcessorioFields = acessorioGroup.querySelector('.accessory-model-fields');
+        var modeloAcessorioFields = acessorioGroup.querySelector('.campos-modelo-acessorio');
         var modeloAcessorioSelect = acessorioGroup.querySelector('#modeloAcessorio');
         var modelosAcessorio = !{modelosAcessorioJson};
         if (!Object.keys(modelosAcessorio).length) {
@@ -225,7 +225,7 @@ block content
 
         function updateCustomEntry(entry) {
           var isNewEntry = entry.select.value === '__nova_entrada__';
-          var groupSelected = !entry.select.closest('.object-fields').hidden;
+          var groupSelected = !entry.select.closest('.campos-objeto').hidden;
           entry.input.hidden = !isNewEntry;
           entry.input.disabled = !groupSelected || !isNewEntry;
           entry.input.required = groupSelected && isNewEntry;
@@ -245,7 +245,7 @@ block content
             var isSelected = group.dataset.tipo === tipoSelect.value;
             group.hidden = !isSelected;
             group.querySelectorAll('input, select, textarea').forEach(function (field) {
-              var isRelationDetail = Boolean(field.closest('.relation-details'));
+              var isRelationDetail = Boolean(field.closest('.detalhes-relacao'));
               field.disabled = !isSelected || isRelationDetail;
               field.required = isSelected && !isRelationDetail &&
                 field.type !== 'checkbox' && field.id !== 'equipamentoId';
@@ -257,7 +257,7 @@ block content
         }
 
         function updateEquipmentVehicleVisibility() {
-          var relationFields = document.querySelector('.vehicle-relation-fields');
+          var relationFields = document.querySelector('.campos-relacao-veiculo');
           var status = document.getElementById('statusEquipamento');
           var shouldShow = tipoSelect.value === 'Equipamento' && status.value === 'Locado';
           var vehicleSelect = document.getElementById('veiculoId');
@@ -267,11 +267,11 @@ block content
           vehicleSelect.required = false;
           if (!shouldShow) {
             vehicleSelect.value = '';
-            relationFields.querySelectorAll('.relation-details input').forEach(function (field) {
+            relationFields.querySelectorAll('.detalhes-relacao input').forEach(function (field) {
               field.value = '';
               field.disabled = true;
             });
-            relationFields.querySelector('.relation-details').hidden = true;
+            relationFields.querySelector('.detalhes-relacao').hidden = true;
           }
         }
 
@@ -302,7 +302,7 @@ block content
           });
         });
         function configurarRelacao(select) {
-          var detalhes = document.querySelector('[data-relation-details-for="' + select.id + '"]');
+          var detalhes = document.querySelector('[data-relacao-details-for="' + select.id + '"]');
           if (!detalhes) return;
           var campos = detalhes.querySelectorAll('input');
           function atualizar() {
@@ -321,7 +321,7 @@ block content
           select.addEventListener('change', atualizar);
           atualizar();
           var tooltip = document.createElement('span');
-          tooltip.className = 'relation-tooltip';
+          tooltip.className = 'dica-relacao';
           tooltip.hidden = true;
           document.body.appendChild(tooltip);
           function mostrarTooltip(event) {

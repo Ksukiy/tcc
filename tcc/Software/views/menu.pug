@@ -1,62 +1,62 @@
-input#menu-toggle.menu-toggle(type="checkbox" aria-label="Abrir menu")
-label#menu-trigger.menu-trigger(for="menu-toggle" aria-label="Abrir menu")
+input#alternador-menu.alternador-menu(type="checkbox" aria-label="Abrir menu")
+label#gatilho-menu.gatilho-menu(for="alternador-menu" aria-label="Abrir menu")
   span
   span
   span
 
-aside.side-menu
-  .side-menu__top
-    p.side-menu__eyebrow PAINEL
-  .user-card
-    .user-avatar= (nome || usuario || 'U').charAt(0).toUpperCase()
-    .user-card__copy
+aside.menu-lateral
+  .topo-menu-lateral
+    p.rotulo-menu-lateral PAINEL
+  .cartao-usuario
+    .avatar-usuario= (nome || usuario || 'U').charAt(0).toUpperCase()
+    .texto-cartao-usuario
       span Usuário conectado
       strong= nome || usuario || 'Visitante'
-  nav.side-nav(aria-label="Menu do usuário")
+  nav.navegacao-lateral(aria-label="Menu do usuário")
     a(href=usuario ? '/perfil?usuario=' + encodeURIComponent(usuario) + (nome ? '&nome=' + encodeURIComponent(nome) : '') : '/perfil')
-      span.nav-icon ✎
+      span.icone-navegacao ✎
       | Editar dados
     a(href="/login")
-      span.nav-icon ↪
+      span.icone-navegacao ↪
       | Sair
-    button#open-options-menu.options-menu-button(type="button")
-      span.nav-icon ⚙
+    button#abrir-menu-opcoes.botao-menu-opcoes(type="button")
+      span.icone-navegacao ⚙
       | Gerenciar entradas
 
-dialog#options-dialog.options-dialog
-  .options-dialog__content
-    button.options-dialog__close(type="button" aria-label="Fechar") ×
-    p.side-menu__eyebrow CATÁLOGO
+dialog#dialogo-opcoes.dialogo-opcoes
+  .conteudo-dialogo-opcoes
+    button.fechar-dialogo-opcoes(type="button" aria-label="Fechar") ×
+    p.rotulo-menu-lateral CATÁLOGO
     h2 Gerenciar entradas
-    p.options-dialog__hint Adicione, renomeie ou remova as entradas usadas nos cadastros.
-    #options-groups.options-dialog__columns
-    p#options-message.options-message(role="status" hidden)
+    p.dica-dialogo-opcoes Adicione, renomeie ou remova as entradas usadas nos cadastros.
+    #grupos-opcoes.colunas-dialogo-opcoes
+    p#mensagem-opcoes.mensagem-opcoes(role="status" hidden)
 
 script.
   (function () {
-    const menuToggle = document.getElementById('menu-toggle');
-    const sideMenu = document.querySelector('.side-menu');
-    const menuTrigger = document.getElementById('menu-trigger');
+    const menuToggle = document.getElementById('alternador-menu');
+    const sideMenu = document.querySelector('.menu-lateral');
+    const menuTrigger = document.getElementById('gatilho-menu');
 
     menuTrigger.addEventListener('click', function (event) {
       event.preventDefault();
       menuToggle.checked = !menuToggle.checked;
-      sideMenu.classList.toggle('is-dismissed', !menuToggle.checked);
+      sideMenu.classList.toggle('dispensado', !menuToggle.checked);
     });
 
-    var dialog = document.getElementById('options-dialog');
-    var optionsButton = document.getElementById('open-options-menu');
-    var closeButton = dialog.querySelector('.options-dialog__close');
-    var message = document.getElementById('options-message');
+    var dialog = document.getElementById('dialogo-opcoes');
+    var optionsButton = document.getElementById('abrir-menu-opcoes');
+    var closeButton = dialog.querySelector('.fechar-dialogo-opcoes');
+    var message = document.getElementById('mensagem-opcoes');
 
     function showMessage(text, isError) {
       message.textContent = text;
-      message.classList.toggle('is-error', Boolean(isError));
+      message.classList.toggle('erro', Boolean(isError));
       message.hidden = false;
     }
 
     function renderOptions(data) {
-      var groups = document.getElementById('options-groups');
+      var groups = document.getElementById('grupos-opcoes');
       groups.innerHTML = '';
       Object.keys(data).forEach(function (campo) {
         var group = document.createElement('section');
@@ -65,7 +65,7 @@ script.
         var input = document.createElement('input');
         var addButton = document.createElement('button');
         var list = document.createElement('ul');
-        group.className = 'options-group';
+        group.className = 'grupo-opcoes';
         group.dataset.campo = campo;
         heading.textContent = campo.indexOf('modeloAcessorio:') === 0
           ? 'Modelos - ' + campo.slice('modeloAcessorio:'.length)
@@ -74,22 +74,22 @@ script.
           : campo === 'marca' ? 'Veículos'
           : campo === 'tipoCliente' ? 'Tipos de clientes'
           : 'Tecnologias';
-        addForm.className = 'options-add-form';
+        addForm.className = 'formulario-adicionar-opcao';
         input.type = 'text';
         input.name = 'valor';
         input.placeholder = 'Nova entrada';
         input.required = true;
         addButton.type = 'submit';
-        addButton.className = 'btn';
+        addButton.className = 'botao';
         addButton.textContent = 'Adicionar';
-        list.className = 'options-list';
+        list.className = 'lista-opcoes';
         addForm.appendChild(input);
         addForm.appendChild(addButton);
         group.appendChild(heading);
         group.appendChild(addForm);
         group.appendChild(list);
         groups.appendChild(group);
-        list = group.querySelector('.options-list');
+        list = group.querySelector('.lista-opcoes');
         (data[campo] || []).forEach(function (valor) {
           var item = document.createElement('li');
           var label = document.createElement('span');
@@ -117,10 +117,10 @@ script.
           list.appendChild(item);
         });
       });
-      groups.querySelectorAll('.options-add-form').forEach(function (form) {
+      groups.querySelectorAll('.formulario-adicionar-opcao').forEach(function (form) {
         form.addEventListener('submit', function (event) {
           event.preventDefault();
-          var campo = form.closest('.options-group').dataset.campo;
+          var campo = form.closest('.grupo-opcoes').dataset.campo;
           var valor = form.elements.valor.value.trim();
           if (valor) {
             updateOption('adicionar', campo, '', valor);
@@ -143,8 +143,8 @@ script.
       }).then(function (data) {
         renderOptions(data);
         showMessage('Opções atualizadas.');
-      }).catch(function (error) {
-        showMessage(error.message, true);
+      }).catch(function (erro) {
+        showMessage(erro.message, true);
       });
     }
 

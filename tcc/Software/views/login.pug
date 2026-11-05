@@ -1,36 +1,36 @@
 extends layout
 
 block content
-	.login-wrapper
-		.login-brand
+	.envoltorio-login
+		.marca-login
 			img(src='/images/LogoEmp6-Photoroom.png' alt='Soluções em Rastreamento Veicular')
-		.login-box
+		.caixa-login
 			h1 Boas-Vindas
 			if message
-				p.error= message
-			form.login-form(action='/login' method='post')
+				p.erro= message
+			form.formulario-login(action='/login' method='post')
 				label(for='email') E-mail
 				input#email(type='email' name='email' placeholder='exemplo@exemplo.com' required)
 
 				label(for='password') Senha
-				.password-field
+				.campo-senha
 					input#password(type='password' name='password' placeholder='123456' required)
-					button.password-toggle(type='button' aria-label='Mostrar senha' aria-pressed='false')
-						svg.password-toggle__icon.password-toggle__icon--visible(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+					button.alternador-senha(type='button' aria-label='Mostrar senha' aria-pressed='false')
+						svg.icone-alternador-senha.icone-senha-visivel(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
 							path(d='M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z')
 							circle(cx='12' cy='12' r='2.5')
-						svg.password-toggle__icon.password-toggle__icon--hidden(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+						svg.icone-alternador-senha.icone-senha-oculta(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
 							path(d='m3 3 18 18')
 							path(d='M10.6 6.2A10.7 10.7 0 0 1 12 6c6.5 0 10 6 10 6a17.5 17.5 0 0 1-3.1 3.8M6.7 6.7C3.6 8.5 2 12 2 12s3.5 6 10 6c1.6 0 3-.4 4.2-.9')
 							path(d='M9.9 9.9a3 3 0 0 0 4.2 4.2')
 
-				.form-row
+				.linha-formulario
 					label.remember
 						input(type='checkbox' name='remember')
 						| Lembrar de mim
 
-				.form-actions
-					button.btn#submit(type='submit') Entrar
+				.acoes-formulario
+					button.botao#submit(type='submit') Entrar
 
-				.form-actions
-					a.cancel(href='/cadastro') Cadastrar Novo Usuário
+				.acoes-formulario
+					a.cancelar(href='/cadastro') Cadastrar Novo Usuário

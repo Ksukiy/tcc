@@ -6,62 +6,62 @@ html(lang="pt-BR")
     title Hermes
     link(rel='stylesheet', href='/stylesheets/style.css')
 
-  body.home-body
+  body.corpo-inicio
     include menu.pug
 
-    main.home-shell
-      header.home-header
-        .home-header__brand
+    main.estrutura-inicio
+      header.cabecalho-inicio
+        .marca-cabecalho-inicio
           img(src='/images/LogoEmp7.png' alt='Logo Hermes')
-        .home-header__copy
+        .texto-cabecalho-inicio
           h1 Hermes - Gerenciador de Estoque
           p Escolha uma área para continuar.
 
-      main.dashboard-grid
-        a.btn-category.card-equipment(href="/equipamentos")
-          span.card-image(aria-hidden="true")
-          span.card-title Equipamentos
-            span.card-arrow ↗
+      main.grade-resumo
+        a.botao-categoria.cartao-equipamentos(href="/equipamentos")
+          span.imagem-cartao(aria-hidden="true")
+          span.titulo-cartao Equipamentos
+            span.seta-cartao ↗
 
-        a.btn-category.card-accessories(href="/acessorios")
-          span.card-image(aria-hidden="true")
-          span.card-title Acessórios
-            span.card-arrow ↗
+        a.botao-categoria.cartao-acessorios(href="/acessorios")
+          span.imagem-cartao(aria-hidden="true")
+          span.titulo-cartao Acessórios
+            span.seta-cartao ↗
 
-        a.btn-category.card-vehicles(href="/veiculos")
-          span.card-image(aria-hidden="true")
-          span.card-title Veículos
-            span.card-arrow ↗
+        a.botao-categoria.cartao-veiculos(href="/veiculos")
+          span.imagem-cartao(aria-hidden="true")
+          span.titulo-cartao Veículos
+            span.seta-cartao ↗
 
-        a.btn-category.card-clients(href="/clientes")
-          span.card-image(aria-hidden="true")
-          span.card-title Clientes
-            span.card-arrow ↗
+        a.botao-categoria.cartao-clientes(href="/clientes")
+          span.imagem-cartao(aria-hidden="true")
+          span.titulo-cartao Clientes
+            span.seta-cartao ↗
 
-      section.home-dashboard(aria-labelledby="dashboard-title")
+      section.painel-inicio(aria-labelledby="titulo-resumo")
         - var resumoAtual = resumo || {}
-        .dashboard-heading
-          .dashboard-heading__copy
-            p.dashboard-kicker RESUMO DO SISTEMA
-            h2#dashboard-title Visão rápida
+        .cabecalho-resumo
+          .texto-cabecalho-resumo
+            p.chamada-resumo RESUMO DO SISTEMA
+            h2#titulo-resumo Visão rápida
 
-        .dashboard-stats
-          .dashboard-stat
-            span.dashboard-stat__icon ◈
+        .estatisticas-resumo
+          .estatistica-resumo
+            span.icone-estatistica-resumo ◈
             strong= resumoAtual.equipamentos || 0
             span Equipamentos cadastrados
-          .dashboard-stat
-            span.dashboard-stat__icon ◈
+          .estatistica-resumo
+            span.icone-estatistica-resumo ◈
             strong= resumoAtual.acessorios || 0
             span Acessórios cadastrados
-          .dashboard-stat
-            span.dashboard-stat__icon ◈
+          .estatistica-resumo
+            span.icone-estatistica-resumo ◈
             strong= resumoAtual.veiculos || 0
             span Veículos cadastrados
-          .dashboard-stat
-            span.dashboard-stat__icon ◈
+          .estatistica-resumo
+            span.icone-estatistica-resumo ◈
             strong= resumoAtual.clientes || 0
             span Clientes cadastrados
 
-        .dashboard-links
-          a.dashboard-add-button(href="/adicionar") Adicionar
+        .links-resumo
+          a.botao-adicionar-resumo(href="/adicionar") Adicionar

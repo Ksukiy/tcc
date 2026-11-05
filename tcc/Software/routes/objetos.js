@@ -133,6 +133,13 @@ router.post('/:id/editar', function(req, res) {
   objetos.atualizarObjeto(req.params.id, dadosDoFormulario(req.body, objeto));
   var relacao = dadosDaRelacao(req.body, objeto);
   if (relacao) {
+    var deveManterRelacao = relacao.equipamentoId && relacao.veiculoId &&
+      (objeto.tipo !== 'Equipamento' || req.body.status === 'Locado');
+    if (!deveManterRelacao) {
+      relacoes.desvincularPorObjeto(objeto.id);
+      return res.redirect(obterUrlDeRetorno(req.body.voltar, objeto.tipo));
+    }
+
     var equipamentoDestino = objetos.buscarPorId(relacao.equipamentoId);
     var veiculoDestino = objetos.buscarPorId(relacao.veiculoId);
     var equipamentoDoVeiculo = veiculoDestino && relacoes.obterEquipamentoDoVeiculo(veiculoDestino.id);
@@ -148,11 +155,9 @@ router.post('/:id/editar', function(req, res) {
       return renderEditar(res, objeto, req.body, 'Este equipamento já está ligado a outro veículo.');
     }
     relacoes.desvincularPorObjeto(objeto.id);
-    if (relacao.equipamentoId && relacao.veiculoId) {
-      var resultado = relacoes.vincular(relacao.equipamentoId, relacao.veiculoId);
-      if (resultado.erro) {
-        return renderEditar(res, objeto, req.body, resultado.erro);
-      }
+    var resultado = relacoes.vincular(relacao.equipamentoId, relacao.veiculoId, relacao);
+    if (resultado.erro) {
+      return renderEditar(res, objeto, req.body, resultado.erro);
     }
   }
   res.redirect(obterUrlDeRetorno(req.body.voltar, objeto.tipo));

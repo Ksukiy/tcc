@@ -8,42 +8,42 @@ html(lang="pt-BR")
 
   body
     include menu.pug
-    a.page-back(href="/inicio") Voltar
-    .container
-      .page-meta
-        nav.breadcrumbs(aria-label="Navegação estrutural")
+    a.voltar-pagina(href="/inicio") Voltar
+    .conteiner
+      .metadados-pagina
+        nav.migalhas-navegacao(aria-label="Navegação estrutural")
           a(href="/inicio") Início
           span(aria-hidden="true") /
           span Clientes
-        nav.list-navigation(aria-label="Outras áreas")
+        nav.navegacao-listas(aria-label="Outras áreas")
           a(href='/equipamentos') Equipamentos
           a(href='/acessorios') Acessórios
           a(href='/veiculos') Veículos
-      header.header
+      header.cabecalho
         h1 Lista de Clientes
-        .header-actions
-          a.btn-add(href="/adicionar?tipo=Cliente") Adicionar cliente
+        .acoes-cabecalho
+          a.botao-adicionar(href="/adicionar?tipo=Cliente") Adicionar cliente
 
       - var filtrosAtuais = filtros || {}
       - var tiposClienteLista = tiposCliente && tiposCliente.length ? tiposCliente : []
 
-      form.list-filters(action='/clientes' method='get')
-        .search-field
+      form.filtros-lista(action='/clientes' method='get')
+        .campo-busca
           label(for='busca') Buscar
           input#busca(type='search' name='busca' value=filtrosAtuais.busca placeholder='Nome, telefone ou CPF/CNPJ')
-        button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-clientes') Filtrar
-        .filter-panel#filtros-clientes(hidden)
+        button.alternador-filtros(type='button' aria-expanded='false' aria-controls='filtros-clientes') Filtrar
+        .painel-filtros#filtros-clientes(hidden)
           strong Opções de filtragem
           label(for='tipoCliente') Tipo de cliente
           select#tipoCliente(name='tipoCliente')
             option(value='') Todos
             each tipoCliente in tiposClienteLista
               option(value=tipoCliente selected=filtrosAtuais.tipoCliente === tipoCliente)= tipoCliente
-          .filter-actions
-            button.btn(type='submit') Aplicar filtros
-            a.clear-filters(href='/clientes') Limpar
+          .acoes-filtros
+            button.botao(type='submit') Aplicar filtros
+            a.limpar-filtros(href='/clientes') Limpar
 
-      main.table-container
+      main.conteiner-tabela
         table
           thead
             tr
@@ -62,13 +62,13 @@ html(lang="pt-BR")
                   td= item.tipoCliente || "Não informado"
                   td= item.cpfCnpj || "Não informado"
                   td= item.id || "Não informado"
-                  td.table-action
-                    .action-buttons
-                      a.btn-edit(href='/objetos/' + item.id + '/editar?voltar=/clientes' aria-label='Editar objeto' title='Editar objeto') &#9998;
-                      form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
-                        button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
+                  td.acao-tabela
+                    .botoes-acao
+                      a.botao-editar(href='/objetos/' + item.id + '/editar?voltar=/clientes' aria-label='Editar objeto' title='Editar objeto') &#9998;
+                      form.formulario-remocao(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                        button.botao-remover(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="6") Nenhum cliente encontrado.
+                td.estado-vazio(colspan="6") Nenhum cliente encontrado.
 
       script(src='/javascripts/list-filters.js')

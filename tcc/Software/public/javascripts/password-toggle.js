@@ -1,6 +1,6 @@
 (function () {
-  document.querySelectorAll('.password-toggle').forEach(function (toggle) {
-    var field = toggle.closest('.password-field');
+  document.querySelectorAll('.alternador-senha').forEach(function (toggle) {
+    var field = toggle.closest('.campo-senha');
     var input = field && field.querySelector('input[type="password"], input[type="text"]');
 
     if (!input) {
@@ -13,7 +13,7 @@
       input.type = isVisible ? 'password' : 'text';
       toggle.setAttribute('aria-pressed', String(!isVisible));
       toggle.setAttribute('aria-label', isVisible ? 'Mostrar senha' : 'Ocultar senha');
-      toggle.classList.toggle('is-visible', !isVisible);
+      toggle.classList.toggle('visivel', !isVisible);
     });
   });
 }());

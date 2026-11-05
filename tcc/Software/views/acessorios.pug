@@ -8,32 +8,32 @@ html(lang="pt-BR")
 
   body
     include menu.pug
-    a.page-back(href="/inicio") Voltar
-    .container
-      .page-meta
-        nav.breadcrumbs(aria-label="Navegação estrutural")
+    a.voltar-pagina(href="/inicio") Voltar
+    .conteiner
+      .metadados-pagina
+        nav.migalhas-navegacao(aria-label="Navegação estrutural")
           a(href="/inicio") Início
           span(aria-hidden="true") /
           span Acessórios
-        nav.list-navigation(aria-label="Outras áreas")
+        nav.navegacao-listas(aria-label="Outras áreas")
           a(href='/equipamentos') Equipamentos
           a(href='/veiculos') Veículos
           a(href='/clientes') Clientes
-      header.header
+      header.cabecalho
         h1 Lista de Acessórios
-        .header-actions
-          a.btn-add(href="/adicionar?tipo=Acessório") Adicionar acessório
+        .acoes-cabecalho
+          a.botao-adicionar(href="/adicionar?tipo=Acessório") Adicionar acessório
 
       - var filtrosAtuais = filtros || {}
       - var tiposAcessorioLista = tiposAcessorio && tiposAcessorio.length ? tiposAcessorio : ['Bloqueador', 'Leitor', 'Chaveiro']
       - var modelosLista = modelos && modelos.length ? modelos : ['Relé de Bloqueio', 'Ibutton']
 
-      form.list-filters(action='/acessorios' method='get')
-        .search-field
+      form.filtros-lista(action='/acessorios' method='get')
+        .campo-busca
           label(for='busca') Buscar
           input#busca(type='search' name='busca' value=filtrosAtuais.busca placeholder='Tipo, modelo ou status')
-        button.filter-toggle(type='button' aria-expanded='false' aria-controls='filtros-acessorios') Filtrar
-        .filter-panel#filtros-acessorios(hidden)
+        button.alternador-filtros(type='button' aria-expanded='false' aria-controls='filtros-acessorios') Filtrar
+        .painel-filtros#filtros-acessorios(hidden)
           strong Opções de filtragem
           label(for='tipoAcessorio') Tipo de acessório
           select#tipoAcessorio(name='tipoAcessorio')
@@ -51,11 +51,11 @@ html(lang="pt-BR")
             option(value='Locado' selected=filtrosAtuais.status === 'Locado') Locado
             option(value='Disponível' selected=filtrosAtuais.status === 'Disponível') Disponível
             option(value='Em Manutenção' selected=filtrosAtuais.status === 'Em Manutenção') Em Manutenção
-          .filter-actions
-            button.btn(type='submit') Aplicar filtros
-            a.clear-filters(href='/acessorios') Limpar
+          .acoes-filtros
+            button.botao(type='submit') Aplicar filtros
+            a.limpar-filtros(href='/acessorios') Limpar
 
-      main.table-container
+      main.conteiner-tabela
         table
           thead
             tr
@@ -71,16 +71,16 @@ html(lang="pt-BR")
                   td= item.tipoAcessorio || "Não informado"
                   td= item.modelo || "Não informado"
                   td
-                    - var classeStatus = item.status === 'Locado' ? 'status-located' : item.status === 'Disponível' ? 'status-available' : item.status === 'Em Manutenção' ? 'status-maintenance' : 'status-unknown'
-                    span.status-badge(class=classeStatus)= item.status || "Não informado"
+                    - var classeStatus = item.status === 'Locado' ? 'status-locado' : item.status === 'Disponível' ? 'status-disponivel' : item.status === 'Em Manutenção' ? 'status-manutencao' : 'status-desconhecido'
+                    span.distintivo-status(class=classeStatus)= item.status || "Não informado"
                   td= item.id || "Não informado"
-                  td.table-action
-                    .action-buttons
-                      a.btn-edit(href='/objetos/' + item.id + '/editar?voltar=/acessorios' aria-label='Editar objeto' title='Editar objeto') &#9998;
-                      form.delete-form(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
-                        button.btn-delete(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
+                  td.acao-tabela
+                    .botoes-acao
+                      a.botao-editar(href='/objetos/' + item.id + '/editar?voltar=/acessorios' aria-label='Editar objeto' title='Editar objeto') &#9998;
+                      form.formulario-remocao(action='/objetos/' + item.id + '/remover' method='post' onsubmit="return confirm('Remover este objeto?');")
+                        button.botao-remover(type='submit' aria-label='Remover objeto' title='Remover objeto') &#128465;
             else
               tr
-                td.empty-state(colspan="5") Nenhum acessório encontrado no estoque.
+                td.estado-vazio(colspan="5") Nenhum acessório encontrado no estoque.
 
       script(src='/javascripts/list-filters.js')

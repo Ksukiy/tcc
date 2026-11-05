@@ -11,19 +11,19 @@ block content
   - var paginaAnterior = backUrl || '/inicio'
   - var veiculoAtual = objeto.veiculoId ? String(objeto.veiculoId) : ''
   - var equipamentoAtual = objeto.equipamentoId ? String(objeto.equipamentoId) : ''
-  a.page-back(href=paginaAnterior) Voltar
-  .container
-    nav.breadcrumbs(aria-label="Navegação estrutural")
+  a.voltar-pagina(href=paginaAnterior) Voltar
+  .conteiner
+    nav.migalhas-navegacao(aria-label="Navegação estrutural")
       a(href="/inicio") Início
       span(aria-hidden="true") /
       span Editar objeto
-    header.header
+    header.cabecalho
       h1 Editar #{objeto.tipo}
 
-    main.form-container
+    main.conteiner-formulario
       if message
-        p.error= message
-      form.object-form(action='/objetos/' + objeto.id + '/editar' method='post')
+        p.erro= message
+      form.formulario-objeto(action='/objetos/' + objeto.id + '/editar' method='post')
         input(type='hidden' name='voltar' value=paginaAnterior)
         input(type='hidden' name='tipo' value=objeto.tipo)
 
@@ -46,7 +46,7 @@ block content
             each equipamento in (equipamentos || [])
               - var equipamentoTooltip = equipamento.relacao ? 'Garantia: ' + (equipamento.relacao.garantia || 'Não informada') + ' | Instalação: ' + (equipamento.relacao.dataInstalacao || 'Não informada') + ' | Retirada: ' + (equipamento.relacao.dataRetirada || 'Não informada') : 'Sem relação cadastrada'
               option(value=equipamento.id selected=String(equipamento.id) === equipamentoAtual title=equipamentoTooltip data-tooltip=equipamentoTooltip data-garantia=equipamento.relacao && equipamento.relacao.garantia data-data-instalacao=equipamento.relacao && equipamento.relacao.dataInstalacao data-data-retirada=equipamento.relacao && equipamento.relacao.dataRetirada)= equipamento.numeroSerie || 'Sem número de série'
-          .relation-details(data-relation-details-for='equipamentoId' hidden)
+          .detalhes-relacao(data-relacao-details-for='equipamentoId' hidden)
             label(for='garantiaVeiculo') Garantia
             input#garantiaVeiculo(type='text' name='garantia' value=objeto.relacao && objeto.relacao.garantia placeholder='Ex.: 12 meses')
             label(for='dataInstalacaoVeiculo') Data de instalação
@@ -92,7 +92,7 @@ block content
             each veiculo in (veiculos || [])
               - var veiculoTooltip = veiculo.relacao ? 'Garantia: ' + (veiculo.relacao.garantia || 'Não informada') + ' | Instalação: ' + (veiculo.relacao.dataInstalacao || 'Não informada') + ' | Retirada: ' + (veiculo.relacao.dataRetirada || 'Não informada') : 'Sem relação cadastrada'
               option(value=veiculo.id selected=String(veiculo.id) === veiculoAtual title=veiculoTooltip data-tooltip=veiculoTooltip data-garantia=veiculo.relacao && veiculo.relacao.garantia data-data-instalacao=veiculo.relacao && veiculo.relacao.dataInstalacao data-data-retirada=veiculo.relacao && veiculo.relacao.dataRetirada)= (veiculo.placa || 'Sem placa') + ' - ' + (veiculo.marca || '') + ' ' + (veiculo.modelo || '')
-          .relation-details(data-relation-details-for='veiculoId' hidden)
+          .detalhes-relacao(data-relacao-details-for='veiculoId' hidden)
             label(for='garantiaEquipamento') Garantia
             input#garantiaEquipamento(type='text' name='garantia' value=objeto.relacao && objeto.relacao.garantia placeholder='Ex.: 12 meses')
             label(for='dataInstalacaoEquipamento') Data de instalação
@@ -132,14 +132,14 @@ block content
           label(for='cpfCnpj') CPF/CNPJ
           input#cpfCnpj(type='text' name='cpfCnpj' value=objeto.cpfCnpj placeholder='Digite o CPF ou CNPJ' required)
 
-        .form-actions
-          button.btn(type='submit') Salvar alterações
-          a.cancel(href=paginaAnterior) Cancelar
+        .acoes-formulario
+          button.botao(type='submit') Salvar alterações
+          a.cancelar(href=paginaAnterior) Cancelar
 
     if objeto.tipo === 'Equipamento'
       script.
         (function () {
-          var form = document.querySelector('.object-form');
+          var form = document.querySelector('.formulario-objeto');
           var entries = [
             {
               select: document.getElementById('tecnologia'),
@@ -187,7 +187,7 @@ block content
     if objeto.tipo === 'Cliente'
       script.
         (function () {
-         var form = document.querySelector('.object-form');
+         var form = document.querySelector('.formulario-objeto');
          var select = document.getElementById('tipoCliente');
          var input = document.getElementById('novoTipoCliente');
 
@@ -221,7 +221,7 @@ block content
         (function () {
           function configurarRelacao(select) {
             if (!select) return;
-            var detalhes = document.querySelector('[data-relation-details-for="' + select.id + '"]');
+            var detalhes = document.querySelector('[data-relacao-details-for="' + select.id + '"]');
             if (!detalhes) return;
             var campos = detalhes.querySelectorAll('input');
             function atualizar() {
@@ -240,7 +240,7 @@ block content
             select.addEventListener('change', atualizar);
             atualizar();
             var tooltip = document.createElement('span');
-            tooltip.className = 'relation-tooltip';
+            tooltip.className = 'dica-relacao';
             tooltip.hidden = true;
             document.body.appendChild(tooltip);
             function mostrarTooltip(event) {

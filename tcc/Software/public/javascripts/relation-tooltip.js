@@ -18,13 +18,13 @@
 
     closeTooltip();
     try {
-      relation = JSON.parse(trigger.getAttribute('data-relation') || '{}');
-    } catch (error) {
+      relation = JSON.parse(trigger.getAttribute('data-relacao') || '{}');
+    } catch (erro) {
       relation = {};
     }
-    tooltip.className = 'relation-tooltip';
+    tooltip.className = 'dica-relacao';
     tooltip.setAttribute('role', 'status');
-    title.textContent = trigger.getAttribute('data-relation-title') || 'Detalhes da relação';
+    title.textContent = trigger.getAttribute('data-titulo-relacao') || 'Detalhes da relação';
     intro.textContent = trigger.textContent.trim();
     details.appendChild(criarLinha('Garantia', relation.garantia));
     details.appendChild(criarLinha('Data de instalação', relation.dataInstalacao));
@@ -51,14 +51,14 @@
   }
 
   document.addEventListener('click', function (event) {
-    var trigger = event.target.closest('.relation-trigger');
+    var trigger = event.target.closest('.gatilho-relacao');
 
     if (trigger) {
       event.preventDefault();
       openRelationTooltip(trigger);
       return;
     }
-    if (!event.target.closest('.relation-tooltip')) {
+    if (!event.target.closest('.dica-relacao')) {
       closeTooltip();
     }
   });

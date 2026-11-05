@@ -4,10 +4,11 @@
     "4G"
   ],
   "marca": [
-    "chevrolet"
+    "chevrolet",
+    "vw"
   ],
   "tipoCliente": [
-    "teste"
+    "Particular"
   ],
   "tipoAcessorio": [
     "Bloqueador",

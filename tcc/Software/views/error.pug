@@ -2,11 +2,12 @@ extends layout
 
 block content
   include menu.pug
-  a.page-back(href="/inicio") Voltar
-  nav.breadcrumbs(aria-label="Navegação estrutural")
+  a.voltar-pagina(href="/inicio") Voltar
+  nav.migalhas-navegacao(aria-label="Navegação estrutural")
     a(href="/inicio") Início
     span(aria-hidden="true") /
     span Erro
   h1= message
-  h2= error.status
-  pre #{error.stack}
+  if error
+    h2= error.status
+    pre #{error.stack}

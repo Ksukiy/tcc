@@ -2,26 +2,26 @@ extends layout
 
 block content
   include menu.pug
-  main.home-shell.profile-shell
-    header.home-header.profile-header
-      .home-header__copy
-        p.dashboard-kicker CONFIGURAÇÕES DA CONTA
+  main.estrutura-inicio.estrutura-perfil
+    header.cabecalho-inicio.cabecalho-perfil
+      .texto-cabecalho-inicio
+        p.chamada-resumo CONFIGURAÇÕES DA CONTA
         h1 Meu perfil
-      a.btn-back(href="/inicio") Voltar ao início
+      a.botao-voltar(href="/inicio") Voltar ao início
 
-    section.home-dashboard.profile-dashboard(aria-labelledby="profile-title")
-      .dashboard-heading
-        .dashboard-heading__copy
-          p.dashboard-kicker PERFIL ATUAL
-          h2#profile-title= email || 'E-mail não informado'
-        span.dashboard-date Acesso pessoal
+    section.painel-inicio.painel-perfil(aria-labelledby="titulo-perfil")
+      .cabecalho-resumo
+        .texto-cabecalho-resumo
+          p.chamada-resumo PERFIL ATUAL
+          h2#titulo-perfil= email || 'E-mail não informado'
+        span.data-resumo Acesso pessoal
 
       if message
-        p.error= message
+        p.erro= message
 
-      .profile-content
+      .conteudo-perfil
 
-        form.login-form.profile-form(action='/perfil' method='post')
+        form.formulario-login.formulario-perfil(action='/perfil' method='post')
           label(for='nome') Nome
           input#nome(type='text' name='nome' value=nome placeholder='Seu nome completo' required)
 
@@ -29,45 +29,45 @@ block content
           input#email(type='email' name='email' value=email placeholder='exemplo@exemplo.com' required)
 
           label(for='senhaAtual') Senha atual
-          .password-field
+          .campo-senha
             input#senhaAtual(type='password' name='senhaAtual' placeholder='Digite sua senha atual' required)
-            button.password-toggle(type='button' aria-label='Mostrar senha' aria-pressed='false')
-              svg.password-toggle__icon.password-toggle__icon--visible(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+            button.alternador-senha(type='button' aria-label='Mostrar senha' aria-pressed='false')
+              svg.icone-alternador-senha.icone-senha-visivel(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
                 path(d='M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z')
                 circle(cx='12' cy='12' r='2.5')
-              svg.password-toggle__icon.password-toggle__icon--hidden(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+              svg.icone-alternador-senha.icone-senha-oculta(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
                 path(d='m3 3 18 18')
                 path(d='M10.6 6.2A10.7 10.7 0 0 1 12 6c6.5 0 10 6 10 6a17.5 17.5 0 0 1-3.1 3.8M6.7 6.7C3.6 8.5 2 12 2 12s3.5 6 10 6c1.6 0 3-.4 4.2-.9')
                 path(d='M9.9 9.9a3 3 0 0 0 4.2 4.2')
 
-          .profile-section
+          .secao-perfil
             h2 Redefinir senha
-            p.profile-help Preencha os campos abaixo somente se quiser trocar sua senha.
+            p.ajuda-perfil Preencha os campos abaixo somente se quiser trocar sua senha.
 
             label(for='novaSenha') Nova senha
-            .password-field
+            .campo-senha
               input#novaSenha(type='password' name='novaSenha' placeholder='Digite a nova senha' minlength='6')
-              button.password-toggle(type='button' aria-label='Mostrar senha' aria-pressed='false')
-                svg.password-toggle__icon.password-toggle__icon--visible(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+              button.alternador-senha(type='button' aria-label='Mostrar senha' aria-pressed='false')
+                svg.icone-alternador-senha.icone-senha-visivel(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
                   path(d='M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z')
                   circle(cx='12' cy='12' r='2.5')
-                svg.password-toggle__icon.password-toggle__icon--hidden(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+                svg.icone-alternador-senha.icone-senha-oculta(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
                   path(d='m3 3 18 18')
                   path(d='M10.6 6.2A10.7 10.7 0 0 1 12 6c6.5 0 10 6 10 6a17.5 17.5 0 0 1-3.1 3.8M6.7 6.7C3.6 8.5 2 12 2 12s3.5 6 10 6c1.6 0 3-.4 4.2-.9')
                   path(d='M9.9 9.9a3 3 0 0 0 4.2 4.2')
 
             label(for='confirmarSenha') Confirmar nova senha
-            .password-field
+            .campo-senha
               input#confirmarSenha(type='password' name='confirmarSenha' placeholder='Repita a nova senha' minlength='6')
-              button.password-toggle(type='button' aria-label='Mostrar senha' aria-pressed='false')
-                svg.password-toggle__icon.password-toggle__icon--visible(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+              button.alternador-senha(type='button' aria-label='Mostrar senha' aria-pressed='false')
+                svg.icone-alternador-senha.icone-senha-visivel(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
                   path(d='M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z')
                   circle(cx='12' cy='12' r='2.5')
-                svg.password-toggle__icon.password-toggle__icon--hidden(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+                svg.icone-alternador-senha.icone-senha-oculta(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
                   path(d='m3 3 18 18')
                   path(d='M10.6 6.2A10.7 10.7 0 0 1 12 6c6.5 0 10 6 10 6a17.5 17.5 0 0 1-3.1 3.8M6.7 6.7C3.6 8.5 2 12 2 12s3.5 6 10 6c1.6 0 3-.4 4.2-.9')
                   path(d='M9.9 9.9a3 3 0 0 0 4.2 4.2')
 
-          .form-actions
-            button.btn(type='submit') Salvar alterações
-            a.cancel(href="/inicio") Cancelar
+          .acoes-formulario
+            button.botao(type='submit') Salvar alterações
+            a.cancelar(href="/inicio") Cancelar
