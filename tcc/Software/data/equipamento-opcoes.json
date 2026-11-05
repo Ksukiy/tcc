@@ -3,6 +3,12 @@
     "2G",
     "4G"
   ],
+  "marca": [
+    "chevrolet"
+  ],
+  "tipoCliente": [
+    "teste"
+  ],
   "tipoAcessorio": [
     "Bloqueador",
     "Leitor",

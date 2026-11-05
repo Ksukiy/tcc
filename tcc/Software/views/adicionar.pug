@@ -3,6 +3,8 @@ extends layout
 block content
   include menu.pug
   - var tecnologiaLista = tecnologiaOpcoes || ['2G', '4G']
+  - var marcaLista = marcaOpcoes || ['chevrolet']
+  - var tipoClienteLista = tipoClienteOpcoes || ['Pessoa Física', 'Pessoa Jurídica']
   - var modeloLista = modeloOpcoes || ['RST - OBDII', 'RST - Mini LC', 'RST MINI - LC', 'RST Mini', 'RST LCv5', 'RST One', 'RST MÓVEL RF', 'RST ISCA GPS LORA', 'RST Plus', 'RST Híbrido', 'RST Micro', 'RST - Globalstar', 'NT40', 'NONOS-N4']
   - var tipoAcessorioLista = tipoAcessorioOpcoes || ['Bloqueador', 'Leitor', 'Chaveiro']
   - var modelosAcessorioJson = JSON.stringify(modelosAcessorio || { Bloqueador: ['Relé de Bloqueio'], Leitor: ['Ibutton'], Chaveiro: ['Ibutton'] })
@@ -29,7 +31,12 @@ block content
 
         .object-fields(data-tipo='Veículo')
           label(for='marca') Marca
-          input#marca(type='text' name='marca' placeholder='Digite a marca')
+          select#marca(name='marca' required)
+            option(value='') Selecione a marca
+            each marca in marcaLista
+              option(value=marca)= marca
+            option(value='__nova_entrada__') Adicionar nova entrada
+          input#novaMarca(type='text' placeholder='Digite a nova marca' hidden)
 
           label(for='modeloVeiculo') Modelo
           input#modeloVeiculo(type='text' name='modelo' placeholder='Digite o modelo')
@@ -130,7 +137,12 @@ block content
           input#fone(type='tel' name='fone' placeholder='Digite o telefone')
 
           label(for='tipoCliente') Tipo de Cliente
-          input#tipoCliente(type='text' name='tipoCliente' placeholder='Digite o tipo de cliente')
+          select#tipoCliente(name='tipoCliente' required)
+            option(value='') Selecione o tipo de cliente
+            each tipoCliente in tipoClienteLista
+              option(value=tipoCliente)= tipoCliente
+            option(value='__nova_entrada__') Adicionar nova entrada
+          input#novoTipoCliente(type='text' placeholder='Digite o novo tipo de cliente' hidden)
 
           label(for='cpfCnpj') CPF/CNPJ
           input#cpfCnpj(type='text' name='cpfCnpj' placeholder='Digite o CPF ou CNPJ')
@@ -161,6 +173,14 @@ block content
           {
             select: equipamentoGroup.querySelector('#tecnologia'),
             input: equipamentoGroup.querySelector('#novaTecnologia')
+          },
+          {
+            select: document.querySelector('[data-tipo="Veículo"] #marca'),
+            input: document.querySelector('[data-tipo="Veículo"] #novaMarca')
+          },
+          {
+            select: document.querySelector('[data-tipo="Cliente"] #tipoCliente'),
+            input: document.querySelector('[data-tipo="Cliente"] #novoTipoCliente')
           },
           {
             select: equipamentoGroup.querySelector('#modeloEquipamento'),

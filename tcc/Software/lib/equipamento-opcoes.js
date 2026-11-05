@@ -4,6 +4,8 @@ var path = require('path');
 var arquivo = path.join(__dirname, '..', 'data', 'equipamento-opcoes.json');
 var opcoesPadrao = {
   tecnologia: ['2G', '4G'],
+  marca: ['chevrolet'],
+  tipoCliente: ['Pessoa Física', 'Pessoa Jurídica'],
   tipoAcessorio: ['Bloqueador', 'Leitor', 'Chaveiro'],
   modelosAcessorio: {
     Bloqueador: ['Relé de Bloqueio'],
@@ -82,6 +84,19 @@ function listarModelosAcessorio() {
   return lerOpcoes().modelosAcessorio || {};
 }
 
+function listarModelosAcessorioUnicos() {
+  var modelosPorTipo = listarModelosAcessorio();
+  var modelos = [];
+  Object.keys(modelosPorTipo).forEach(function(tipo) {
+    modelosPorTipo[tipo].forEach(function(modelo) {
+      if (modelos.indexOf(modelo) < 0) {
+        modelos.push(modelo);
+      }
+    });
+  });
+  return modelos;
+}
+
 function adicionarModeloAcessorio(tipo, valor) {
   var entrada = String(valor || '').trim();
   var opcoes = lerOpcoes();
@@ -104,6 +119,8 @@ function listarTodas() {
   var opcoes = lerOpcoes();
   var todas = {
     tecnologia: opcoes.tecnologia || [],
+    marca: opcoes.marca || [],
+    tipoCliente: opcoes.tipoCliente || [],
     modelo: opcoes.modelo || [],
     tipoAcessorio: opcoes.tipoAcessorio || []
   };
@@ -148,6 +165,7 @@ module.exports = {
   editar: editar,
   remover: remover,
   listarModelosAcessorio: listarModelosAcessorio,
+  listarModelosAcessorioUnicos: listarModelosAcessorioUnicos,
   adicionarModeloAcessorio: adicionarModeloAcessorio
   , listarTodas: listarTodas
   , editarModeloAcessorio: editarModeloAcessorio

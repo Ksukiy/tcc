@@ -19,22 +19,16 @@ function obterUrlDeRetorno(url, tipo) {
 }
 
 function renderFormulario(res, dados) {
-  var veiculos = objetos.listarPorTipo('Veículo').map(function(veiculo) {
-    return Object.assign({}, veiculo, {
-      relacao: relacoes.obterRelacaoDoVeiculo(veiculo.id)
-    });
-  });
-  var equipamentos = objetos.listarPorTipo('Equipamento').map(function(equipamento) {
-    return Object.assign({}, equipamento, {
-      relacao: relacoes.obterRelacaoDoEquipamento(equipamento.id)
-    });
-  });
+  var veiculos = relacoes.listarVeiculosComRelacao();
+  var equipamentos = relacoes.listarEquipamentosComRelacao();
 
   res.render('adicionar', Object.assign({
     title: 'Adicionar objeto',
     tipos: tipos,
     statusOpcoes: statusOpcoes,
     tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
+    marcaOpcoes: equipamentoOpcoes.listar('marca'),
+    tipoClienteOpcoes: equipamentoOpcoes.listar('tipoCliente'),
     modeloOpcoes: equipamentoOpcoes.listar('modelo'),
     tipoAcessorioOpcoes: equipamentoOpcoes.listar('tipoAcessorio'),
     modelosAcessorio: equipamentoOpcoes.listarModelosAcessorio(),
@@ -59,6 +53,8 @@ router.post('/', function(req, res, next) {
   var tipo = req.body.tipo;
 
   if (req.body.tecnologia === '__nova_entrada__' ||
+      req.body.marca === '__nova_entrada__' ||
+      req.body.tipoCliente === '__nova_entrada__' ||
       req.body.modelo === '__nova_entrada__' ||
       req.body.tipoAcessorio === '__nova_entrada__') {
     return renderFormulario(res.status(400), {
@@ -87,6 +83,12 @@ router.post('/', function(req, res, next) {
   if (tipo === 'Equipamento') {
     equipamentoOpcoes.adicionar('tecnologia', req.body.tecnologia);
     equipamentoOpcoes.adicionar('modelo', req.body.modelo);
+  }
+  if (tipo === 'Veículo') {
+    equipamentoOpcoes.adicionar('marca', req.body.marca);
+  }
+  if (tipo === 'Cliente') {
+    equipamentoOpcoes.adicionar('tipoCliente', req.body.tipoCliente);
   }
   if (tipo === 'Acessório') {
     equipamentoOpcoes.adicionar('tipoAcessorio', req.body.tipoAcessorio);

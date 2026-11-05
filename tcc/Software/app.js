@@ -6,10 +6,6 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var equipamentosRouter = require('./routes/equipamentos');
-var clientesRouter = require('./routes/clientes');
-var veiculosRouter = require('./routes/veiculos');
-var acessoriosRouter = require('./routes/acessorios');
-var loginRouter = require('./routes/login');
 var cadastroRouter = require('./routes/cadastro');
 var adicionarRouter = require('./routes/adicionar');
 var perfilRouter = require('./routes/perfil');

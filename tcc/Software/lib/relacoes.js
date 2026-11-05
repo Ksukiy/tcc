@@ -76,6 +76,22 @@ function obterEquipamentoDoVeiculo(id) {
   return relacao ? objetos.buscarPorId(relacao.equipamentoId) : null;
 }
 
+function listarVeiculosComRelacao() {
+  return objetos.listarPorTipo('Veículo').map(function(veiculo) {
+    return Object.assign({}, veiculo, {
+      relacao: obterRelacaoDoVeiculo(veiculo.id)
+    });
+  });
+}
+
+function listarEquipamentosComRelacao() {
+  return objetos.listarPorTipo('Equipamento').map(function(equipamento) {
+    return Object.assign({}, equipamento, {
+      relacao: obterRelacaoDoEquipamento(equipamento.id)
+    });
+  });
+}
+
 function migrarJson() {
   if (lerRelacoes().length > 0) {
     return;
@@ -99,5 +115,7 @@ module.exports = {
   vincular: vincular,
   desvincularPorObjeto: desvincularPorObjeto,
   obterVeiculoDoEquipamento: obterVeiculoDoEquipamento,
-  obterEquipamentoDoVeiculo: obterEquipamentoDoVeiculo
+  obterEquipamentoDoVeiculo: obterEquipamentoDoVeiculo,
+  listarVeiculosComRelacao: listarVeiculosComRelacao,
+  listarEquipamentosComRelacao: listarEquipamentosComRelacao
 };

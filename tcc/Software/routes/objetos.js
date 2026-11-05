@@ -5,22 +5,6 @@ var equipamentoOpcoes = require('../lib/equipamento-opcoes');
 var relacoes = require('../lib/relacoes');
 var statusOpcoes = ['Locado', 'Disponível', 'Em Manutenção'];
 
-function listarVeiculosComRelacao() {
-  return objetos.listarPorTipo('Veículo').map(function(veiculo) {
-    return Object.assign({}, veiculo, {
-      relacao: relacoes.obterRelacaoDoVeiculo(veiculo.id)
-    });
-  });
-}
-
-function listarEquipamentosComRelacao() {
-  return objetos.listarPorTipo('Equipamento').map(function(equipamento) {
-    return Object.assign({}, equipamento, {
-      relacao: relacoes.obterRelacaoDoEquipamento(equipamento.id)
-    });
-  });
-}
-
 function obterUrlDeRetorno(url, tipo) {
   var destinos = {
     'Equipamento': '/equipamentos',
@@ -33,6 +17,21 @@ function obterUrlDeRetorno(url, tipo) {
   });
 
   return paginasLista.indexOf(url) >= 0 ? url : destinos[tipo] || '/inicio';
+}
+
+function renderEditar(res, objeto, dados, message, status) {
+  return res.status(status || 400).render('editar', {
+    title: 'Editar objeto',
+    objeto: Object.assign({}, objeto, dados),
+    statusOpcoes: statusOpcoes,
+    tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
+    tipoClienteOpcoes: equipamentoOpcoes.listar('tipoCliente'),
+    modeloOpcoes: equipamentoOpcoes.listar('modelo'),
+    veiculos: relacoes.listarVeiculosComRelacao(),
+    equipamentos: relacoes.listarEquipamentosComRelacao(),
+    backUrl: obterUrlDeRetorno(dados.voltar, objeto.tipo),
+    message: message
+  });
 }
 
 function dadosDoFormulario(body, objeto) {
@@ -100,16 +99,7 @@ router.get('/:id/editar', function(req, res) {
     objetoEdicao.relacao = relacoes.obterRelacaoDoVeiculo(objeto.id);
   }
 
-  res.render('editar', {
-    title: 'Editar objeto',
-    objeto: objetoEdicao,
-    statusOpcoes: statusOpcoes,
-    tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
-    modeloOpcoes: equipamentoOpcoes.listar('modelo'),
-    veiculos: listarVeiculosComRelacao(),
-    equipamentos: listarEquipamentosComRelacao(),
-    backUrl: obterUrlDeRetorno(req.query.voltar, objeto.tipo)
-  });
+  renderEditar(res, objetoEdicao, { voltar: req.query.voltar }, null, 200);
 });
 
 router.post('/:id/editar', function(req, res) {
@@ -120,37 +110,24 @@ router.post('/:id/editar', function(req, res) {
   }
 
   if ((objeto.tipo === 'Equipamento' || objeto.tipo === 'Acessório') && statusOpcoes.indexOf(req.body.status) < 0) {
-    return res.status(400).render('editar', {
-      title: 'Editar objeto',
-      objeto: Object.assign({}, objeto, req.body),
-      statusOpcoes: statusOpcoes,
-      tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
-      modeloOpcoes: equipamentoOpcoes.listar('modelo'),
-      veiculos: listarVeiculosComRelacao(),
-      equipamentos: listarEquipamentosComRelacao(),
-      backUrl: obterUrlDeRetorno(req.body.voltar, objeto.tipo),
-      message: 'Selecione um status válido.'
-    });
+    return renderEditar(res, objeto, req.body, 'Selecione um status válido.');
   }
 
   if (objeto.tipo === 'Equipamento' &&
       (req.body.tecnologia === '__nova_entrada__' || req.body.modelo === '__nova_entrada__')) {
-    return res.status(400).render('editar', {
-      title: 'Editar objeto',
-      objeto: Object.assign({}, objeto, req.body),
-      statusOpcoes: statusOpcoes,
-      tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
-      modeloOpcoes: equipamentoOpcoes.listar('modelo'),
-      veiculos: listarVeiculosComRelacao(),
-      equipamentos: listarEquipamentosComRelacao(),
-      backUrl: obterUrlDeRetorno(req.body.voltar, objeto.tipo),
-      message: 'Informe a nova tecnologia ou modelo.'
-    });
+    return renderEditar(res, objeto, req.body, 'Informe a nova tecnologia ou modelo.');
+  }
+
+  if (objeto.tipo === 'Cliente' && req.body.tipoCliente === '__nova_entrada__') {
+    return renderEditar(res, objeto, req.body, 'Informe o novo tipo de cliente.');
   }
 
   if (objeto.tipo === 'Equipamento') {
     equipamentoOpcoes.adicionar('tecnologia', req.body.tecnologia);
     equipamentoOpcoes.adicionar('modelo', req.body.modelo);
+  }
+  if (objeto.tipo === 'Cliente') {
+    equipamentoOpcoes.adicionar('tipoCliente', req.body.tipoCliente);
   }
 
   objetos.atualizarObjeto(req.params.id, dadosDoFormulario(req.body, objeto));
@@ -162,59 +139,19 @@ router.post('/:id/editar', function(req, res) {
     var veiculoDoEquipamento = equipamentoDestino && relacoes.obterVeiculoDoEquipamento(equipamentoDestino.id);
     if ((relacao.equipamentoId && (!equipamentoDestino || equipamentoDestino.tipo !== 'Equipamento')) ||
         (relacao.veiculoId && (!veiculoDestino || veiculoDestino.tipo !== 'Veículo'))) {
-      return res.status(400).render('editar', {
-        title: 'Editar objeto',
-        objeto: Object.assign({}, objeto, req.body),
-        statusOpcoes: statusOpcoes,
-        tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
-        modeloOpcoes: equipamentoOpcoes.listar('modelo'),
-        veiculos: listarVeiculosComRelacao(),
-        equipamentos: listarEquipamentosComRelacao(),
-        backUrl: obterUrlDeRetorno(req.body.voltar, objeto.tipo),
-        message: 'Selecione um equipamento e veículo válidos.'
-      });
+      return renderEditar(res, objeto, req.body, 'Selecione um equipamento e veículo válidos.');
     }
     if (equipamentoDoVeiculo && String(equipamentoDoVeiculo.id) !== String(relacao.equipamentoId)) {
-      return res.status(400).render('editar', {
-        title: 'Editar objeto',
-        objeto: Object.assign({}, objeto, req.body),
-        statusOpcoes: statusOpcoes,
-        tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
-        modeloOpcoes: equipamentoOpcoes.listar('modelo'),
-        veiculos: listarVeiculosComRelacao(),
-        equipamentos: listarEquipamentosComRelacao(),
-        backUrl: obterUrlDeRetorno(req.body.voltar, objeto.tipo),
-        message: 'Este veículo já possui outro equipamento ligado.'
-      });
+      return renderEditar(res, objeto, req.body, 'Este veículo já possui outro equipamento ligado.');
     }
     if (veiculoDoEquipamento && String(veiculoDoEquipamento.id) !== String(relacao.veiculoId)) {
-      return res.status(400).render('editar', {
-        title: 'Editar objeto',
-        objeto: Object.assign({}, objeto, req.body),
-        statusOpcoes: statusOpcoes,
-        tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
-        modeloOpcoes: equipamentoOpcoes.listar('modelo'),
-        veiculos: listarVeiculosComRelacao(),
-        equipamentos: listarEquipamentosComRelacao(),
-        backUrl: obterUrlDeRetorno(req.body.voltar, objeto.tipo),
-        message: 'Este equipamento já está ligado a outro veículo.'
-      });
+      return renderEditar(res, objeto, req.body, 'Este equipamento já está ligado a outro veículo.');
     }
     relacoes.desvincularPorObjeto(objeto.id);
     if (relacao.equipamentoId && relacao.veiculoId) {
       var resultado = relacoes.vincular(relacao.equipamentoId, relacao.veiculoId);
       if (resultado.erro) {
-        return res.status(400).render('editar', {
-          title: 'Editar objeto',
-          objeto: Object.assign({}, objeto, req.body),
-          statusOpcoes: statusOpcoes,
-          tecnologiaOpcoes: equipamentoOpcoes.listar('tecnologia'),
-          modeloOpcoes: equipamentoOpcoes.listar('modelo'),
-          veiculos: listarVeiculosComRelacao(),
-          equipamentos: listarEquipamentosComRelacao(),
-          backUrl: obterUrlDeRetorno(req.body.voltar, objeto.tipo),
-          message: resultado.erro
-        });
+        return renderEditar(res, objeto, req.body, resultado.erro);
       }
     }
   }

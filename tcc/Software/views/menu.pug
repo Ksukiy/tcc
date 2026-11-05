@@ -69,7 +69,11 @@ script.
         group.dataset.campo = campo;
         heading.textContent = campo.indexOf('modeloAcessorio:') === 0
           ? 'Modelos - ' + campo.slice('modeloAcessorio:'.length)
-          : campo === 'tipoAcessorio' ? 'Tipos de acessórios' : campo === 'modelo' ? 'Modelos de equipamentos' : 'Tecnologias';
+          : campo === 'tipoAcessorio' ? 'Tipos de acessórios'
+          : campo === 'modelo' ? 'Modelos de equipamentos'
+          : campo === 'marca' ? 'Veículos'
+          : campo === 'tipoCliente' ? 'Tipos de clientes'
+          : 'Tecnologias';
         addForm.className = 'options-add-form';
         input.type = 'text';
         input.name = 'valor';
@@ -85,7 +89,7 @@ script.
         group.appendChild(addForm);
         group.appendChild(list);
         groups.appendChild(group);
-        var list = group.querySelector('.options-list');
+        list = group.querySelector('.options-list');
         (data[campo] || []).forEach(function (valor) {
           var item = document.createElement('li');
           var label = document.createElement('span');

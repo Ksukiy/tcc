@@ -3,6 +3,8 @@ extends layout
 block content
   include menu.pug
   - var tecnologiaLista = tecnologiaOpcoes || ['2G', '4G']
+  - var tipoClienteLista = tipoClienteOpcoes || ['Pessoa Física', 'Pessoa Jurídica']
+  - var tipoClienteAtualNaLista = tipoClienteLista.indexOf(objeto.tipoCliente) >= 0
   - var modeloLista = modeloOpcoes || ['RST - OBDII', 'RST - Mini LC', 'RST MINI - LC', 'RST Mini', 'RST LCv5', 'RST One', 'RST MÓVEL RF', 'RST ISCA GPS LORA', 'RST Plus', 'RST Híbrido', 'RST Micro', 'RST - Globalstar', 'NT40', 'NONOS-N4']
   - var tecnologiaAtualNaLista = tecnologiaLista.indexOf(objeto.tecnologia) >= 0
   - var modeloAtualNaLista = modeloLista.indexOf(objeto.modelo) >= 0
@@ -118,7 +120,14 @@ block content
           input#fone(type='tel' name='fone' value=objeto.fone placeholder='Digite o telefone' required)
 
           label(for='tipoCliente') Tipo de Cliente
-          input#tipoCliente(type='text' name='tipoCliente' value=objeto.tipoCliente placeholder='Digite o tipo de cliente' required)
+          select#tipoCliente(name='tipoCliente' required)
+            option(value='') Selecione o tipo de cliente
+            each tipoCliente in tipoClienteLista
+              option(value=tipoCliente selected=tipoCliente === objeto.tipoCliente)= tipoCliente
+            if !tipoClienteAtualNaLista && objeto.tipoCliente
+              option(value=objeto.tipoCliente selected=true)= objeto.tipoCliente
+            option(value='__nova_entrada__') Adicionar nova entrada
+          input#novoTipoCliente(type='text' placeholder='Digite o novo tipo de cliente' hidden)
 
           label(for='cpfCnpj') CPF/CNPJ
           input#cpfCnpj(type='text' name='cpfCnpj' value=objeto.cpfCnpj placeholder='Digite o CPF ou CNPJ' required)
@@ -174,6 +183,38 @@ block content
               entry.select.appendChild(option);
             });
           });
+        }());
+    if objeto.tipo === 'Cliente'
+      script.
+        (function () {
+         var form = document.querySelector('.object-form');
+         var select = document.getElementById('tipoCliente');
+         var input = document.getElementById('novoTipoCliente');
+
+         function updateEntry() {
+           var isNewEntry = select.value === '__nova_entrada__';
+           input.hidden = !isNewEntry;
+           input.disabled = !isNewEntry;
+           input.required = isNewEntry;
+           if (!isNewEntry) input.value = '';
+         }
+
+         select.addEventListener('change', updateEntry);
+         form.addEventListener('submit', function (event) {
+           if (select.value !== '__nova_entrada__') return;
+           var value = input.value.trim();
+           if (!value) {
+             event.preventDefault();
+             input.focus();
+             return;
+           }
+           var option = document.createElement('option');
+           option.value = value;
+           option.textContent = value;
+           option.selected = true;
+           select.appendChild(option);
+         });
+         updateEntry();
         }());
     if objeto.tipo === 'Equipamento' || objeto.tipo === 'Veículo'
       script.
