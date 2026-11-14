@@ -64,8 +64,7 @@ function dadosDaRelacao(body, objeto) {
       equipamentoId: objeto.id,
       veiculoId: body.veiculoId,
       garantia: body.garantia,
-      dataInstalacao: body.dataInstalacao,
-      dataRetirada: body.dataRetirada
+      dataInstalacao: body.dataInstalacao
     };
   }
   if (objeto.tipo === 'Veículo') {
@@ -73,8 +72,7 @@ function dadosDaRelacao(body, objeto) {
       equipamentoId: body.equipamentoId,
       veiculoId: objeto.id,
       garantia: body.garantia,
-      dataInstalacao: body.dataInstalacao,
-      dataRetirada: body.dataRetirada
+      dataInstalacao: body.dataInstalacao
     };
   }
   return null;

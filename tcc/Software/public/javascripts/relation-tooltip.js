@@ -28,7 +28,6 @@
     intro.textContent = trigger.textContent.trim();
     details.appendChild(criarLinha('Garantia', relation.garantia));
     details.appendChild(criarLinha('Data de instalação', relation.dataInstalacao));
-    details.appendChild(criarLinha('Data de retirada', relation.dataRetirada));
     tooltip.appendChild(title);
     tooltip.appendChild(intro);
     tooltip.appendChild(details);

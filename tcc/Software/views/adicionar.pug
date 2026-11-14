@@ -51,15 +51,13 @@ block content
           select#equipamentoId(name='equipamentoId')
             option(value='') Nenhum equipamento ligado
             each equipamento in (equipamentos || [])
-              - var equipamentoTooltip = equipamento.relacao ? 'Garantia: ' + (equipamento.relacao.garantia || 'Não informada') + ' | Instalação: ' + (equipamento.relacao.dataInstalacao || 'Não informada') + ' | Retirada: ' + (equipamento.relacao.dataRetirada || 'Não informada') : 'Sem relação cadastrada'
-              option(value=equipamento.id title=equipamentoTooltip data-tooltip=equipamentoTooltip data-garantia=equipamento.relacao && equipamento.relacao.garantia data-data-instalacao=equipamento.relacao && equipamento.relacao.dataInstalacao data-data-retirada=equipamento.relacao && equipamento.relacao.dataRetirada)= equipamento.numeroSerie || 'Sem número de série'
+              - var equipamentoTooltip = equipamento.relacao ? 'Garantia: ' + (equipamento.relacao.garantia || 'Não informada') + ' | Instalação: ' + (equipamento.relacao.dataInstalacao || 'Não informada') : 'Sem relação cadastrada'
+              option(value=equipamento.id title=equipamentoTooltip data-tooltip=equipamentoTooltip data-garantia=equipamento.relacao && equipamento.relacao.garantia data-data-instalacao=equipamento.relacao && equipamento.relacao.dataInstalacao)= equipamento.numeroSerie || 'Sem número de série'
           .detalhes-relacao(data-relacao-details-for='equipamentoId' hidden)
             label(for='garantiaVeiculo') Garantia
             input#garantiaVeiculo(type='text' name='garantia' placeholder='Ex.: 12 meses')
             label(for='dataInstalacaoVeiculo') Data de instalação
             input#dataInstalacaoVeiculo(type='date' name='dataInstalacao')
-            label(for='dataRetiradaVeiculo') Data de retirada
-            input#dataRetiradaVeiculo(type='date' name='dataRetirada')
 
         - var statusLista = statusOpcoes || ['Locado', 'Disponível', 'Em Manutenção']
 
@@ -97,15 +95,13 @@ block content
             select#veiculoId(name='veiculoId')
               option(value='') Nenhum veículo
               each veiculo in (veiculos || [])
-                - var veiculoTooltip = veiculo.relacao ? 'Garantia: ' + (veiculo.relacao.garantia || 'Não informada') + ' | Instalação: ' + (veiculo.relacao.dataInstalacao || 'Não informada') + ' | Retirada: ' + (veiculo.relacao.dataRetirada || 'Não informada') : 'Sem relação cadastrada'
-                option(value=veiculo.id title=veiculoTooltip data-tooltip=veiculoTooltip data-garantia=veiculo.relacao && veiculo.relacao.garantia data-data-instalacao=veiculo.relacao && veiculo.relacao.dataInstalacao data-data-retirada=veiculo.relacao && veiculo.relacao.dataRetirada)= (veiculo.placa || 'Sem placa') + ' - ' + (veiculo.marca || '') + ' ' + (veiculo.modelo || '')
+                - var veiculoTooltip = veiculo.relacao ? 'Garantia: ' + (veiculo.relacao.garantia || 'Não informada') + ' | Instalação: ' + (veiculo.relacao.dataInstalacao || 'Não informada') : 'Sem relação cadastrada'
+                option(value=veiculo.id title=veiculoTooltip data-tooltip=veiculoTooltip data-garantia=veiculo.relacao && veiculo.relacao.garantia data-data-instalacao=veiculo.relacao && veiculo.relacao.dataInstalacao)= (veiculo.placa || 'Sem placa') + ' - ' + (veiculo.marca || '') + ' ' + (veiculo.modelo || '')
             .detalhes-relacao(data-relacao-details-for='veiculoId' hidden)
               label(for='garantiaEquipamento') Garantia
               input#garantiaEquipamento(type='text' name='garantia' placeholder='Ex.: 12 meses')
               label(for='dataInstalacaoEquipamento') Data de instalação
               input#dataInstalacaoEquipamento(type='date' name='dataInstalacao')
-              label(for='dataRetiradaEquipamento') Data de retirada
-              input#dataRetiradaEquipamento(type='date' name='dataRetirada')
 
         .campos-objeto(data-tipo='Acessório')
           label(for='tipoAcessorio') Tipo
@@ -315,7 +311,6 @@ block content
             if (option) {
               campos[0].value = option.dataset.garantia || '';
               campos[1].value = option.dataset.dataInstalacao || '';
-              campos[2].value = option.dataset.dataRetirada || '';
             }
           }
           select.addEventListener('change', atualizar);

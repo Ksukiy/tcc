@@ -936,13 +936,13 @@ tr:last-child td {
   position:absolute;
   z-index:0;
   top:-150px;
-  left:-180px;
+  left:-210px;
   display:flex;
   align-items:center;
   justify-content:center;
   width:440px;
   height:440px;
-  opacity:0.35;
+  opacity:0.22;
   pointer-events:none;
 }
 .marca-cabecalho-inicio img {
@@ -1529,10 +1529,10 @@ tr:last-child td {
   }
   .marca-cabecalho-inicio {
     top:-70px;
-    left:-90px;
+    left:-105px;
     width:280px;
     height:280px;
-    opacity:0.32;
+    opacity:0.2;
   }
   .corpo-inicio .cabecalho-inicio h1 {
     font-size:2.2rem;

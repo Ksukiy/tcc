@@ -127,8 +127,7 @@ router.post('/', function(req, res, next) {
   if (tipo === 'Equipamento' && req.body.status === 'Locado' && req.body.veiculoId) {
     var resultadoEquipamento = relacoes.vincular(novoObjeto.id, req.body.veiculoId, {
       garantia: req.body.garantia,
-      dataInstalacao: req.body.dataInstalacao,
-      dataRetirada: req.body.dataRetirada
+      dataInstalacao: req.body.dataInstalacao
     });
     if (resultadoEquipamento.erro) {
       objetos.removerObjeto(novoObjeto.id);
@@ -142,8 +141,7 @@ router.post('/', function(req, res, next) {
   if (tipo === 'Veículo' && req.body.equipamentoId) {
     var resultadoVeiculo = relacoes.vincular(req.body.equipamentoId, novoObjeto.id, {
       garantia: req.body.garantia,
-      dataInstalacao: req.body.dataInstalacao,
-      dataRetirada: req.body.dataRetirada
+      dataInstalacao: req.body.dataInstalacao
     });
     if (resultadoVeiculo.erro) {
       objetos.removerObjeto(novoObjeto.id);
